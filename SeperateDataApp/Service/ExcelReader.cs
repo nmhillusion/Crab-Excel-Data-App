@@ -1,4 +1,5 @@
 ﻿using ExcelDataReader;
+using SeperateDataApp.Store;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,7 +17,7 @@ namespace SeperateDataApp.Service
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
 
-        public List<List<List<string>>> ReadData(string excelFilePath)
+        public List<TableModel> ReadData(string excelFilePath)
         {
             logHelper.Info("Read Excel at " + excelFilePath);
             try
@@ -32,31 +33,33 @@ namespace SeperateDataApp.Service
                 DataSet dataSet = reader.AsDataSet();
                 DataTableCollection dataTables = dataSet.Tables;
 
-                List<List<List<string>>> totalData = new List<List<List<string>>>();
+                List<TableModel> totalData = new();
 
                 for (int tableIdx = 0; tableIdx < dataTables.Count; ++tableIdx)
                 {
                     DataTable dataTable = dataTables[tableIdx];
                     DataRowCollection dataRowCollection = dataTable.Rows;
 
-                    List<List<string>> tableData = new List<List<string>>();
+                    logHelper.Debug("Table Name: " + dataTable.TableName);
+
+
+                    List<List<object>> tableData = new();
 
                     for (int rowIdx = 0; rowIdx < dataRowCollection.Count; ++rowIdx)
                     {
                         DataRow dataRow = dataRowCollection[rowIdx];
-                        object[] cells = dataRow.ItemArray;
 
-                        List<string> rowData = new List<string>();
-
-                        for (int colIdx = 0; colIdx < cells.Length; ++colIdx)
-                        {
-                            rowData.Add(cells[colIdx].ToString());
-                        }
+                        List<object> rowData = new();
+                        rowData.AddRange(dataRow.ItemArray);
 
                         tableData.Add(rowData);
                     }
 
-                    totalData.Add(tableData);
+                    TableModel tableModel = new();
+                    tableModel.tableName = dataTable.TableName;
+                    tableModel.SetTableData(tableData);
+
+                    totalData.Add(tableModel);
                 }
 
                 return totalData;
@@ -64,7 +67,7 @@ namespace SeperateDataApp.Service
             catch (Exception ex)
             {
                 logHelper.Error(ex);
-                return new List<List<List<string>>>();
+                return new List<TableModel>();
             }
         }
     }

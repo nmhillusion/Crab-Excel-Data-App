@@ -5,21 +5,147 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SeperateDataApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="Seperate Data App" Height="Auto" Width="800"
         >
     <Grid 
         Margin="8"
         >
         <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="60" d:Tag="0" />
+            <RowDefinition Height="10" d:Tag="1" />
+            <RowDefinition Height="30" d:Tag="2" />
+            <RowDefinition Height="30" d:Tag="3" />
+            <RowDefinition Height="10" d:Tag="4" />
+            <RowDefinition Height="30" d:Tag="5" />
+            <RowDefinition Height="30" d:Tag="6" />
+            <RowDefinition Height="10" d:Tag="7" />
+            <RowDefinition Height="60" d:Tag="8" />
+            <RowDefinition Height="10" d:Tag="9" />
+            <RowDefinition Height="30" d:Tag="10" />
         </Grid.RowDefinitions>
         
-        <Button 
-            x:Name="btnSelectFile"
-            Content="Select File"
+        <Grid
             Grid.Column="0"
             Grid.Row="0"
+            >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+
+            <Label 
+                Content="Select file to seperate:"
+                Grid.Column="0"
+                Grid.Row="0" 
+                VerticalAlignment="Bottom"
+            />
+            <TextBox 
+                Grid.Column="0"
+                Grid.Row="1" 
+                VerticalContentAlignment="Center"
+                x:Name="inpFileToSeperate"
+            />
+            <Button 
+                x:Name="btnFileToSeperate"
+                Content="..."
+                Grid.Column="1"
+                Grid.Row="1"
+                Cursor="Hand"
+                ToolTip="Select file to seperate"
+            />
+        </Grid>
+
+        <Separator 
+            Grid.Column="0"
+            Grid.Row="1" 
+            />
+        <Label 
+            Content="Select sheet:"
+            Grid.Column="0"
+            Grid.Row="2"
+            VerticalAlignment="Bottom"
+            />
+        <ComboBox 
+            Grid.Column="0"
+            Grid.Row="3"
+            VerticalContentAlignment="Center"
+            x:Name="cboSheetIdx"
+            />
+        
+        <Separator 
+            Grid.Column="0"
+            Grid.Row="4" 
+            />
+        <Label 
+            Content="Select column to seperate:"
+            Grid.Column="0"
+            Grid.Row="5" 
+            VerticalAlignment="Bottom"
+            />
+        <ComboBox 
+            Grid.Column="0"
+            Grid.Row="6" 
+            VerticalContentAlignment="Center"
+            x:Name="cboColumnIdx"
+            />
+
+        <Separator 
+            Grid.Column="0"
+            Grid.Row="7" 
+            />
+        <Grid
+            Grid.Column="0"
+            Grid.Row="8"
+            >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            
+            <Label 
+                Content="Select folder to save:"
+                Grid.Column="0"
+                Grid.Row="0" 
+                VerticalAlignment="Bottom"
+            />
+            <TextBox 
+                Grid.Column="0"
+                Grid.Row="1"
+                VerticalContentAlignment="Center"
+                x:Name="inpFolderToSave"
+            />
+            <Button Content="..."
+                Grid.Column="1"
+                Grid.Row="1"
+                x:Name="btnFolderToSave"
+                ToolTip="Select folder to save"
+                />
+        </Grid>
+
+        <Separator 
+            Grid.Column="0"
+            Grid.Row="9" 
+            />
+        <Button 
+            x:Name="btnSeperate"
+            Grid.Column="0"
+            Grid.Row="10"
+            Content="Seperate"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Center"
+            Width="100"
+            Height="30"
+            Foreground="#eeeeee"
+            Background="#333333"
+            Cursor="Hand"
             />
     </Grid>
 </Window>

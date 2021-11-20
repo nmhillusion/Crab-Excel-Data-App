@@ -4,7 +4,7 @@ namespace SeperateDataApp.Store
 {
     class TableStore
     {
-        private readonly List<List<List<string>>> data = new();
+        private readonly List<TableModel> data = new();
         private static readonly TableStore instance = new();
 
         private TableStore() { }
@@ -14,13 +14,13 @@ namespace SeperateDataApp.Store
             return instance;
         }
 
-        public void SetData(List<List<List<string>>> newData)
+        public void SetData(List<TableModel> newTables)
         {
             data.Clear();
-            data.AddRange(newData);
+            data.AddRange(newTables);
         }
 
-        public List<List<string>> GetSheetAt(int sheetIdx)
+        public TableModel GetSheetAt(int sheetIdx)
         {
             if (0 <= sheetIdx && sheetIdx < data.Count)
             {
@@ -28,7 +28,7 @@ namespace SeperateDataApp.Store
             }
             else
             {
-                return new List<List<string>>();
+                return new TableModel();
             }
         }
 
