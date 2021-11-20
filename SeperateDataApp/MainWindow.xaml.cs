@@ -15,6 +15,7 @@ namespace SeperateDataApp
         private readonly LogHelper logHelper;
         private readonly ExcelReader excelReader = new();
         private readonly TableStore tableStore = TableStore.GetInstance();
+        private readonly DifferenceService differenceService = new();
 
         public MainWindow()
         {
@@ -25,6 +26,8 @@ namespace SeperateDataApp
             btnFileToSeperate.Click += BtnSelectFile_Click;
             cboSheetIdx.SelectionChanged += CboSheetIdx_SelectionChanged;
             btnFolderToSave.Click += BtnFolderToSave_Click;
+
+            btnSeperate.Click += BtnSeperate_Click;
         }
 
         private void BtnSelectFile_Click(object sender, RoutedEventArgs e)
@@ -71,6 +74,32 @@ namespace SeperateDataApp
             }
         }
 
+        private void BtnSeperate_Click(object sender, RoutedEventArgs e)
+        {
+            int selectedSheetIdx = cboSheetIdx.SelectedIndex;
+            int selectedColumnIdx = cboColumnIdx.SelectedIndex;
+
+            if (0 == tableStore.Count)
+            {
+                System.Windows.MessageBox.Show("Error", "Please select a file to seperate", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (-1 == selectedSheetIdx)
+            {
+                System.Windows.MessageBox.Show("Error", "Please select a sheet to seperate", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (-1 == selectedColumnIdx)
+            {
+                System.Windows.MessageBox.Show("Error", "Please select a column to seperate", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            DoSeperateData();
+        }
+
         private void UpdateDataForUI()
         {
             for (int sheetIdx = 0; sheetIdx < tableStore.Count; ++sheetIdx)
@@ -109,6 +138,24 @@ namespace SeperateDataApp
                 {
                     cboColumnIdx.SelectedIndex = 0;
                 }
+            }
+        }
+
+        private void DoSeperateData()
+        {
+            int selectedSheetIdx = cboSheetIdx.SelectedIndex;
+            int selectedColumnIdx = cboColumnIdx.SelectedIndex;
+
+            TableModel sheetToSeperate = tableStore.GetSheetAt(selectedSheetIdx);
+            List<object> dataAtColumnIdx = sheetToSeperate.GetDataAtColumnIdx(selectedColumnIdx);
+            ISet<string> allDistinctDataOfSeperateData = differenceService.distinctListObject(
+                dataAtColumnIdx
+            );
+
+            logHelper.Info("----------- allDistinctDataOfSeperateData ---------------- " + allDistinctDataOfSeperateData.Count);
+            foreach (string diffItem in allDistinctDataOfSeperateData)
+            {
+                logHelper.Info("\t diffItem: " + diffItem);
             }
         }
     }
