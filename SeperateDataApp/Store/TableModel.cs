@@ -4,7 +4,8 @@ namespace SeperateDataApp.Store
 {
     class TableModel
     {
-        public string tableName { get; set; }
+        public string tableName;
+        public int sizeOfHeader = 1;
         private readonly List<List<object>> tableData = new();
 
         public void SetTableData(List<List<object>> data)
@@ -13,15 +14,18 @@ namespace SeperateDataApp.Store
             tableData.AddRange(data);
         }
 
-        public List<object> GetHeader()
+        public List<List<object>> GetHeader()
         {
             if (0 < tableData.Count)
             {
-                return tableData[0];
+                List<List<object>> headers = new();
+                headers.AddRange(tableData.GetRange(0, sizeOfHeader));
+
+                return headers;
             }
             else
             {
-                return new List<object>();
+                return new List<List<object>>();
             }
         }
 

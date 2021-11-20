@@ -2,6 +2,8 @@
 using SeperateDataApp.Store;
 using SeperateDataApp.Validator;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 
@@ -14,6 +16,7 @@ namespace SeperateDataApp
     {
         private readonly LogHelper logHelper;
         private readonly ExcelReader excelReader = new();
+        private readonly ExcelWriter excelWriter = new();
         private readonly TableStore tableStore = TableStore.GetInstance();
         private readonly DifferenceService differenceService = new();
 
@@ -78,26 +81,54 @@ namespace SeperateDataApp
         {
             int selectedSheetIdx = cboSheetIdx.SelectedIndex;
             int selectedColumnIdx = cboColumnIdx.SelectedIndex;
+            string folderToSavePath = inpFolderToSave.Text;
 
             if (0 == tableStore.Count)
             {
-                System.Windows.MessageBox.Show("Error", "Please select a file to seperate", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a file to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (-1 == selectedSheetIdx)
             {
-                System.Windows.MessageBox.Show("Error", "Please select a sheet to seperate", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a sheet to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (-1 == selectedColumnIdx)
             {
-                System.Windows.MessageBox.Show("Error", "Please select a column to seperate", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a column to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            DoSeperateData();
+            if (StringValidator.IsBlank(folderToSavePath))
+            {
+                System.Windows.MessageBox.Show("Please select a folder to save", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            BackgroundWorker backgroundWorker = new();
+            backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
+            //backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
+            //backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
+            backgroundWorker.RunWorkerAsync(2000);
+        }
+
+        private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            logHelper.Info("Percent: " + e.ProgressPercentage);
+        }
+
+        private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            btnSeperate.IsEnabled = true;
+        }
+
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker backgroundWorker = sender as BackgroundWorker;
+            btnSeperate.IsEnabled = false;
+            DoSeperateData(backgroundWorker);
         }
 
         private void UpdateDataForUI()
@@ -127,35 +158,60 @@ namespace SeperateDataApp
             {
                 TableModel sheetToPush = tableStore.GetSheetAt(selectedSheetIdx);
 
-                List<object> header = sheetToPush.GetHeader();
-                for (int headerCellIdx = 0; headerCellIdx < header.Count; ++headerCellIdx)
+                List<List<object>> headers = sheetToPush.GetHeader();
+                if (0 < headers.Count)
                 {
-                    cboColumnIdx.Items.Add(
-                        $"{headerCellIdx} - {header[headerCellIdx]}"
-                    );
-                }
-                if (0 < header.Count)
-                {
-                    cboColumnIdx.SelectedIndex = 0;
+                    List<object> header = headers[0];
+
+                    for (int headerCellIdx = 0; headerCellIdx < header.Count; ++headerCellIdx)
+                    {
+                        cboColumnIdx.Items.Add(
+                            $"{headerCellIdx} - {header[headerCellIdx]}"
+                        );
+                    }
+                    if (0 < header.Count)
+                    {
+                        cboColumnIdx.SelectedIndex = 0;
+                    }
                 }
             }
         }
 
-        private void DoSeperateData()
+        private void DoSeperateData(BackgroundWorker backgroundWorker)
         {
             int selectedSheetIdx = cboSheetIdx.SelectedIndex;
             int selectedColumnIdx = cboColumnIdx.SelectedIndex;
+            string folderToSavePath = inpFolderToSave.Text;
 
             TableModel sheetToSeperate = tableStore.GetSheetAt(selectedSheetIdx);
             List<object> dataAtColumnIdx = sheetToSeperate.GetDataAtColumnIdx(selectedColumnIdx);
-            ISet<string> allDistinctDataOfSeperateData = differenceService.distinctListObject(
-                dataAtColumnIdx
+            List<string> allDistinctDataOfSeperateData = new();
+            allDistinctDataOfSeperateData.AddRange(
+                differenceService.DistinctListObject(
+                    dataAtColumnIdx
+                )
             );
 
             logHelper.Info("----------- allDistinctDataOfSeperateData ---------------- " + allDistinctDataOfSeperateData.Count);
-            foreach (string diffItem in allDistinctDataOfSeperateData)
+            for (int diffItemIdx = 0; diffItemIdx < allDistinctDataOfSeperateData.Count; ++diffItemIdx)
             {
+                backgroundWorker.ReportProgress(diffItemIdx * 100 / allDistinctDataOfSeperateData.Count);
+
+                string diffItem = allDistinctDataOfSeperateData[diffItemIdx];
                 logHelper.Info("\t diffItem: " + diffItem);
+
+                /// CREATE FILE FOR EACH DIFF ITEM
+                string pathToSaveFile = Path.Combine(folderToSavePath, diffItem + ".xlsx");
+                if (File.Exists(pathToSaveFile))
+                {
+                    File.Delete(pathToSaveFile);
+                }
+
+                /// FILTER DATA FOR THIS DIFF ITEM
+                List<List<object>> filteredData = differenceService.FilterData(sheetToSeperate, selectedColumnIdx, diffItem);
+
+                /// SAVE FILTERED DATA TO EXCEL FILE
+                excelWriter.WriteToFile(pathToSaveFile, diffItem, sheetToSeperate.GetHeader(), filteredData);
             }
         }
     }
