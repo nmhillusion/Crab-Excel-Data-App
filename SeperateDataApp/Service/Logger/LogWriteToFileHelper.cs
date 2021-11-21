@@ -10,6 +10,11 @@ namespace SeperateDataApp.Service.Logger
 
         private LogWriteToFileHelper()
         {
+            /// REMOVE OLD LOGS
+            if (File.Exists(fileLogPath))
+            {
+                File.Delete(fileLogPath);
+            }
         }
 
         public static LogWriteToFileHelper GetInstance()
