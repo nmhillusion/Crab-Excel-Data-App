@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SeperateDataApp": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
