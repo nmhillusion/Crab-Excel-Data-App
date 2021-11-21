@@ -6,6 +6,7 @@ namespace SeperateDataApp.Service.Logger
     class ListViewLogHelper
     {
         private static readonly ListViewLogHelper instance = new();
+        private readonly int MAX_LOG_LINES = 50;
         private ListView logListView;
 
         private ListViewLogHelper()
@@ -29,9 +30,15 @@ namespace SeperateDataApp.Service.Logger
             {
                 logListView.Dispatcher.InvokeAsync(() =>
                 {
+                    if (MAX_LOG_LINES < logListView.Items.Count)
+                    {
+                        logListView.Items.RemoveAt(0);
+                    }
+
                     logListView.Items.Add(
                         messageLog
                     );
+
                     logListView.ScrollIntoView(messageLog);
                 });
             }
