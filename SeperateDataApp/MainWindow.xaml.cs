@@ -1,4 +1,5 @@
-﻿using SeperateDataApp.Model;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using SeperateDataApp.Model;
 using SeperateDataApp.Service;
 using SeperateDataApp.Store;
 using SeperateDataApp.Validator;
@@ -27,6 +28,7 @@ namespace SeperateDataApp
 
             logHelper.Debug(">> Start App >>");
             InitializeComponent();
+
             btnFileToSeperate.Click += BtnSelectFile_Click;
             cboSheetIdx.SelectionChanged += CboSheetIdx_SelectionChanged;
             btnFolderToSave.Click += BtnFolderToSave_Click;
@@ -86,25 +88,37 @@ namespace SeperateDataApp
 
             if (0 == tableStore.Count)
             {
-                System.Windows.MessageBox.Show("Please select a file to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                new ToastContentBuilder()
+                    .AddText("Error", AdaptiveTextStyle.Title)
+                    .AddText("Please select a file to seperate", AdaptiveTextStyle.Body)
+                    .Show();
                 return;
             }
 
             if (-1 == selectedSheetIdx)
             {
-                System.Windows.MessageBox.Show("Please select a sheet to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                new ToastContentBuilder()
+                    .AddText("Error", AdaptiveTextStyle.Title)
+                    .AddText("Please select a sheet to seperate", AdaptiveTextStyle.Body)
+                    .Show();
                 return;
             }
 
             if (-1 == selectedColumnIdx)
             {
-                System.Windows.MessageBox.Show("Please select a column to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                new ToastContentBuilder()
+                    .AddText("Error", AdaptiveTextStyle.Title)
+                    .AddText("Please select a column to seperate", AdaptiveTextStyle.Body)
+                    .Show();
                 return;
             }
 
             if (StringValidator.IsBlank(folderToSavePath))
             {
-                System.Windows.MessageBox.Show("Please select a folder to save", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                new ToastContentBuilder()
+                    .AddText("Error", AdaptiveTextStyle.Title)
+                    .AddText("Please select a folder to save", AdaptiveTextStyle.Body)
+                    .Show();
                 return;
             }
 
@@ -133,11 +147,17 @@ namespace SeperateDataApp
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             logHelper.Info("Percent: " + e.ProgressPercentage);
+            processBar.Value = e.ProgressPercentage;
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             btnSeperate.IsEnabled = true;
+            processBar.Value = 100;
+
+            new ToastContentBuilder()
+                .AddText("Completed!")
+                .Show();
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)

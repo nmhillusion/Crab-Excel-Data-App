@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SeperateDataApp"
         mc:Ignorable="d"
-        Title="Seperate Data App" Height="Auto" Width="800"
+        Title="Seperate Data App" Height="450" Width="800"
         >
     <Grid 
         Margin="8"
@@ -22,6 +22,9 @@
             <RowDefinition Height="60" d:Tag="8" />
             <RowDefinition Height="10" d:Tag="9" />
             <RowDefinition Height="30" d:Tag="10" />
+            <RowDefinition Height="10" d:Tag="11" />
+            <RowDefinition Height="30" d:Tag="12" />
+            <RowDefinition Height="*" d:Tag="13" />
         </Grid.RowDefinitions>
         
         <Grid
@@ -146,6 +149,19 @@
             Foreground="#eeeeee"
             Background="#333333"
             Cursor="Hand"
+            />
+        <Separator 
+            Grid.Column="0"
+            Grid.Row="11" 
+            />
+        <ProgressBar 
+            Height="2"
+            VerticalAlignment="Center"
+            Grid.Column="0"
+            Grid.Row="12" 
+            Minimum="0"
+            Maximum="100"
+            x:Name="processBar"
             />
     </Grid>
 </Window>
