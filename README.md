@@ -2,6 +2,11 @@
 
 ---
 
+Test Data will look like:
+
+![Test Data](./resource/screenshots/testData.png)
+
+
 > Step 1: Open App
 
 ![Open app](./resource/screenshots/openApp.png)
@@ -16,8 +21,13 @@
 
 > Step 4: Click `Seperate` button and Running seperation
 
-![Running Seperation](./resource/screenshots/selectFolderToSave.png)
+![Running Seperation](./resource/screenshots/runningSeperation.png)
 
 > Finally: Complete and check your saved folder
 
 ![Done](./resource/screenshots/done.png)
+
+
+Result folder:
+
+![Check result](./resource/screenshots/checkResult.png)
