@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SeperateDataApp.Service.Logger;
+using System;
 using System.Collections.Generic;
 
 namespace SeperateDataApp.Service

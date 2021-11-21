@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using SeperateDataApp.Model;
 using SeperateDataApp.Service;
+using SeperateDataApp.Service.Logger;
 using SeperateDataApp.Store;
 using SeperateDataApp.Validator;
 using System.Collections.Generic;
@@ -24,11 +25,14 @@ namespace SeperateDataApp
 
         public MainWindow()
         {
-            logHelper = new LogHelper(this);
-
-            logHelper.Debug(">> Start App >>");
             InitializeComponent();
 
+            /// LOGGER
+            logHelper = new LogHelper(this);
+            logHelper.SetLogListView(listViewLog);
+            logHelper.Debug(">> Start App >>");
+
+            /// EVENT
             btnFileToSeperate.Click += BtnSelectFile_Click;
             cboSheetIdx.SelectionChanged += CboSheetIdx_SelectionChanged;
             btnFolderToSave.Click += BtnFolderToSave_Click;
@@ -233,7 +237,7 @@ namespace SeperateDataApp
                 backgroundWorker.ReportProgress(diffItemIdx * 100 / allDistinctDataOfSeperateData.Count);
 
                 string diffItem = allDistinctDataOfSeperateData[diffItemIdx];
-                logHelper.Info("\t diffItem: " + diffItem);
+                logHelper.Info("diffItem: " + diffItem);
 
                 /// CREATE FILE FOR EACH DIFF ITEM
                 string pathToSaveFile = Path.Combine(folderToSavePath, diffItem + ".xlsx");

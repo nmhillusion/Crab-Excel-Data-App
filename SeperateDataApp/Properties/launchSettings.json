@@ -2,7 +2,7 @@
   "profiles": {
     "SeperateDataApp": {
       "commandName": "Project",
-      "nativeDebugging": true
+      "nativeDebugging": false
     }
   }
 }

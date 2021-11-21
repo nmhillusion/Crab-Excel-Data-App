@@ -1,5 +1,6 @@
 ﻿using ExcelDataReader;
 using SeperateDataApp.Model;
+using SeperateDataApp.Service.Logger;
 using System;
 using System.Collections.Generic;
 using System.Data;

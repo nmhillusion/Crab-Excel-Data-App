@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace SeperateDataApp.Service.Log
+namespace SeperateDataApp.Service.Logger
 {
     internal class LogWriteToFileHelper
     {

@@ -1,16 +1,22 @@
-﻿using SeperateDataApp.Service.Log;
-using System;
+﻿using System;
+using System.Windows.Controls;
 
-namespace SeperateDataApp.Service
+namespace SeperateDataApp.Service.Logger
 {
     class LogHelper
     {
         private readonly object owner;
         private readonly LogWriteToFileHelper logWriteToFileHelper = LogWriteToFileHelper.GetInstance();
+        private readonly ListViewLogHelper listViewLogHelper = ListViewLogHelper.GetInstance();
 
         public LogHelper(object owner)
         {
             this.owner = owner;
+        }
+
+        public void SetLogListView(ListView logListView)
+        {
+            this.listViewLogHelper.SetLogListView(logListView);
         }
 
         private void WriteLine(LogLevel logLevel, object data)
@@ -18,6 +24,7 @@ namespace SeperateDataApp.Service
             string messageLog = $" {DateTime.Now:yyyy-MM-dd HH:mm:ss.FFF} : {owner.GetType()} : [{logLevel.GetLogLevelValue()}] : {data}";
             System.Diagnostics.Debug.WriteLine(messageLog);
             logWriteToFileHelper.AppendNewLineLog(messageLog);
+            listViewLogHelper.AddLogToListView(messageLog);
         }
 
         public void Debug(object data)

@@ -1,4 +1,4 @@
-﻿namespace SeperateDataApp.Service.Log
+﻿namespace SeperateDataApp.Service.Logger
 {
     internal class LogLevelBase
     {
