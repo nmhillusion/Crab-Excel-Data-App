@@ -92,37 +92,25 @@ namespace SeperateDataApp
 
             if (0 == tableStore.Count)
             {
-                new ToastContentBuilder()
-                    .AddText("Error", AdaptiveTextStyle.Title)
-                    .AddText("Please select a file to seperate", AdaptiveTextStyle.Body)
-                    .Show();
+                System.Windows.MessageBox.Show("Please select a file to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (-1 == selectedSheetIdx)
             {
-                new ToastContentBuilder()
-                    .AddText("Error", AdaptiveTextStyle.Title)
-                    .AddText("Please select a sheet to seperate", AdaptiveTextStyle.Body)
-                    .Show();
+                System.Windows.MessageBox.Show("Please select a sheet to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (-1 == selectedColumnIdx)
             {
-                new ToastContentBuilder()
-                    .AddText("Error", AdaptiveTextStyle.Title)
-                    .AddText("Please select a column to seperate", AdaptiveTextStyle.Body)
-                    .Show();
+                System.Windows.MessageBox.Show("Please select a column to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (StringValidator.IsBlank(folderToSavePath))
             {
-                new ToastContentBuilder()
-                    .AddText("Error", AdaptiveTextStyle.Title)
-                    .AddText("Please select a folder to save", AdaptiveTextStyle.Body)
-                    .Show();
+                System.Windows.MessageBox.Show("Please select a folder to save", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
