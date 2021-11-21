@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SeperateDataApp.Model;
+using System.Collections.Generic;
 
 namespace SeperateDataApp.Store
 {

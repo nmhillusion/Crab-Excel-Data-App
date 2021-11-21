@@ -1,4 +1,5 @@
-﻿using SeperateDataApp.Service;
+﻿using SeperateDataApp.Model;
+using SeperateDataApp.Service;
 using SeperateDataApp.Store;
 using SeperateDataApp.Validator;
 using System.Collections.Generic;
@@ -107,11 +108,26 @@ namespace SeperateDataApp
                 return;
             }
 
+            StartBackgroundWorker();
+        }
+
+        private void StartBackgroundWorker()
+        {
+            btnSeperate.IsEnabled = false;
             BackgroundWorker backgroundWorker = new();
             backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
-            //backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
-            //backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
-            backgroundWorker.RunWorkerAsync(2000);
+            backgroundWorker.WorkerReportsProgress = true;
+            backgroundWorker.WorkerSupportsCancellation = true;
+            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
+            backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
+
+            SeperateBackgroundModel seperateBackgroundModel = new()
+            {
+                selectedSheetIdx = cboSheetIdx.SelectedIndex,
+                selectedColumnIdx = cboColumnIdx.SelectedIndex,
+                folderToSavePath = inpFolderToSave.Text
+            };
+            backgroundWorker.RunWorkerAsync(seperateBackgroundModel);
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -127,8 +143,7 @@ namespace SeperateDataApp
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker backgroundWorker = sender as BackgroundWorker;
-            btnSeperate.IsEnabled = false;
-            DoSeperateData(backgroundWorker);
+            DoSeperateData(backgroundWorker, e.Argument as SeperateBackgroundModel);
         }
 
         private void UpdateDataForUI()
@@ -177,11 +192,11 @@ namespace SeperateDataApp
             }
         }
 
-        private void DoSeperateData(BackgroundWorker backgroundWorker)
+        private void DoSeperateData(BackgroundWorker backgroundWorker, SeperateBackgroundModel seperateBackgroundModel)
         {
-            int selectedSheetIdx = cboSheetIdx.SelectedIndex;
-            int selectedColumnIdx = cboColumnIdx.SelectedIndex;
-            string folderToSavePath = inpFolderToSave.Text;
+            int selectedSheetIdx = seperateBackgroundModel.selectedSheetIdx;
+            int selectedColumnIdx = seperateBackgroundModel.selectedColumnIdx;
+            string folderToSavePath = seperateBackgroundModel.folderToSavePath;
 
             TableModel sheetToSeperate = tableStore.GetSheetAt(selectedSheetIdx);
             List<object> dataAtColumnIdx = sheetToSeperate.GetDataAtColumnIdx(selectedColumnIdx);

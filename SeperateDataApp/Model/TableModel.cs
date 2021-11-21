@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SeperateDataApp.Store
+namespace SeperateDataApp.Model
 {
     class TableModel
     {

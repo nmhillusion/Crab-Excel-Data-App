@@ -1,4 +1,4 @@
-﻿using SeperateDataApp.Store;
+﻿using SeperateDataApp.Model;
 using System.Collections.Generic;
 
 namespace SeperateDataApp.Service
