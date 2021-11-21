@@ -27,9 +27,13 @@ namespace SeperateDataApp.Service.Logger
         {
             if (null != logListView)
             {
-                logListView.Items.Add(
-                    messageLog
-                );
+                logListView.Dispatcher.InvokeAsync(() =>
+                {
+                    logListView.Items.Add(
+                        messageLog
+                    );
+                    logListView.ScrollIntoView(messageLog);
+                });
             }
         }
     }

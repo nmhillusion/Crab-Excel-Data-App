@@ -150,7 +150,7 @@ namespace SeperateDataApp
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            logHelper.Info("Percent: " + e.ProgressPercentage);
+            logHelper.Info($"Percent: {e.ProgressPercentage}%");
             processBar.Value = e.ProgressPercentage;
         }
 
