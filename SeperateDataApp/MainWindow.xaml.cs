@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
-using SeperateDataApp.Model;
+﻿using SeperateDataApp.Model;
 using SeperateDataApp.Service;
 using SeperateDataApp.Service.Logger;
 using SeperateDataApp.Store;
@@ -53,7 +52,7 @@ namespace SeperateDataApp
             if (true == openFileDialog.ShowDialog())
             {
                 string chosenFilePath = openFileDialog.FileName;
-                logHelper.Debug($"<< Chosen File: { chosenFilePath } <<");
+                logHelper.Debug($"<< Chosen File: {chosenFilePath} <<");
                 inpFileToSeperate.Text = chosenFilePath;
 
                 if (!StringValidator.IsBlank(chosenFilePath))
@@ -147,9 +146,7 @@ namespace SeperateDataApp
             btnSeperate.IsEnabled = true;
             processBar.Value = 100;
 
-            new ToastContentBuilder()
-                .AddText("Completed!")
-                .Show();
+            System.Windows.Forms.MessageBox.Show("Completed", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
