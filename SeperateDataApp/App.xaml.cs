@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace SeperateDataApp
+namespace CrabExcelDataApp
 {
     /// <summary>
     /// Interaction logic for App.xaml

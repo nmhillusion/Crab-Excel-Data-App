@@ -1,4 +1,4 @@
-﻿namespace SeperateDataApp.Validator
+﻿namespace CrabExcelDataApp.Validator
 {
     class StringValidator
     {

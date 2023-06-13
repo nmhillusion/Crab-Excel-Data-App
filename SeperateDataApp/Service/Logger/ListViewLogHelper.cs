@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 
-namespace SeperateDataApp.Service.Logger
+namespace CrabExcelDataApp.Service.Logger
 {
     class ListViewLogHelper
     {

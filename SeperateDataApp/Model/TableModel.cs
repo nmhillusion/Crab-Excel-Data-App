@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SeperateDataApp.Model
+namespace CrabExcelDataApp.Model
 {
     class TableModel
     {

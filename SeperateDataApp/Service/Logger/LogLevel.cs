@@ -1,4 +1,4 @@
-﻿namespace SeperateDataApp.Service.Logger
+﻿namespace CrabExcelDataApp.Service.Logger
 {
     internal class LogLevelBase
     {

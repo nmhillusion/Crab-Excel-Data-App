@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformVersion>10</TargetPlatformVersion>
     <UseWPF>true</UseWPF>
-    <StartupObject>SeperateDataApp.App</StartupObject>
+    <StartupObject>CrabExcelDataApp.App</StartupObject>
     <ApplicationIcon>logo.ico</ApplicationIcon>
     <UseWindowsForms>true</UseWindowsForms>
     <Authors>nmhillusion</Authors>
-    <Product>Seperate Data App</Product>
-    <Description>An app to seperate data</Description>
+    <Product>Crab Excel Data App</Product>
+    <Description>An app to process on excel data</Description>
     <Copyright>MIT</Copyright>
     <PackageIcon>logo.png</PackageIcon>
     <PackageIconUrl />

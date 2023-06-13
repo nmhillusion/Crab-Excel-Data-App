@@ -1,4 +1,4 @@
-﻿namespace SeperateDataApp.Model
+﻿namespace CrabExcelDataApp.Model
 {
     class SeperateBackgroundModel
     {

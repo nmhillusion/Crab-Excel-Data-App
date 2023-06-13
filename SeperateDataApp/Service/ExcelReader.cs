@@ -1,12 +1,12 @@
 ﻿using ExcelDataReader;
-using SeperateDataApp.Model;
-using SeperateDataApp.Service.Logger;
+using CrabExcelDataApp.Model;
+using CrabExcelDataApp.Service.Logger;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 
-namespace SeperateDataApp.Service
+namespace CrabExcelDataApp.Service
 {
     class ExcelReader
     {

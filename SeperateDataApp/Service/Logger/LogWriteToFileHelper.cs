@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace SeperateDataApp.Service.Logger
+namespace CrabExcelDataApp.Service.Logger
 {
     internal class LogWriteToFileHelper
     {

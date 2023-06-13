@@ -1,8 +1,8 @@
-﻿using SeperateDataApp.Service.Logger;
+﻿using CrabExcelDataApp.Service.Logger;
 using System;
 using System.Collections.Generic;
 
-namespace SeperateDataApp.Service
+namespace CrabExcelDataApp.Service
 {
     class ExcelWriter
     {

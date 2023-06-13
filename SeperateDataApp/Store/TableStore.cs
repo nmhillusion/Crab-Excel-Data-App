@@ -1,7 +1,7 @@
-﻿using SeperateDataApp.Model;
+﻿using CrabExcelDataApp.Model;
 using System.Collections.Generic;
 
-namespace SeperateDataApp.Store
+namespace CrabExcelDataApp.Store
 {
     class TableStore
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 
-namespace SeperateDataApp.Service.Logger
+namespace CrabExcelDataApp.Service.Logger
 {
     class LogHelper
     {

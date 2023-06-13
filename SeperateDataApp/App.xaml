@@ -1,7 +1,7 @@
-﻿<Application x:Class="SeperateDataApp.App"
+﻿<Application x:Class="CrabExcelDataApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:SeperateDataApp"
+             xmlns:local="clr-namespace:CrabExcelDataApp"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          
