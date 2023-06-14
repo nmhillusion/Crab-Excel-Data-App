@@ -4,9 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CrabExcelDataApp"
+        xmlns:localPanel="clr-namespace:CrabExcelDataApp.Panel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Label>This is main window</Label>
-    </Grid>
+        Title="Crab Excel Data" Height="450" Width="800">
+    <TabControl>
+        <TabItem Header="Seperate Data" x:Name="seperateDataTab">
+            <localPanel:SeperateDataPanel />
+        </TabItem>
+
+        <TabItem Header="Merge Data" x:Name="mergeDataTab">
+            <localPanel:MergeDataPanel />
+        </TabItem>
+    </TabControl>
 </Window>

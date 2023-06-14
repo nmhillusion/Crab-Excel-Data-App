@@ -1,11 +1,11 @@
-﻿<Window x:Class="CrabExcelDataApp.SeperateDataWindow"
+﻿<UserControl x:Class="CrabExcelDataApp.Panel.SeperateDataPanel"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CrabExcelDataApp"
         mc:Ignorable="d"
-        Title="Seperate Data App" Height="550" Width="800"
+        Height="550" Width="800"
         Background="#eeeeee"
         >
     <Grid 
@@ -29,7 +29,7 @@
             <RowDefinition Height="*" d:Tag="13" />
             <RowDefinition Height="20" d:Tag="14" />
         </Grid.RowDefinitions>
-        
+
         <Grid
             Grid.Column="0"
             Grid.Row="0"
@@ -81,7 +81,7 @@
             VerticalContentAlignment="Center"
             x:Name="cboSheetIdx"
             />
-        
+
         <Separator 
             Grid.Column="0"
             Grid.Row="4" 
@@ -115,7 +115,7 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            
+
             <Label 
                 Content="Select folder to save:"
                 Grid.Column="0"
@@ -186,4 +186,4 @@
             FontStyle="Italic"
             />
     </Grid>
-</Window>
+</UserControl>

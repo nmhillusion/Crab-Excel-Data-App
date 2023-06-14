@@ -7,14 +7,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Forms;
+using System.Windows.Controls;
 
-namespace CrabExcelDataApp
+namespace CrabExcelDataApp.Panel
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class SeperateDataWindow : Window
+    public partial class SeperateDataPanel : UserControl
     {
         private readonly LogHelper logHelper;
         private readonly ExcelReader excelReader = new();
@@ -22,7 +22,7 @@ namespace CrabExcelDataApp
         private readonly TableStore tableStore = TableStore.GetInstance();
         private readonly DifferenceService differenceService = new();
 
-        public SeperateDataWindow()
+        public SeperateDataPanel()
         {
             InitializeComponent();
 
@@ -69,7 +69,7 @@ namespace CrabExcelDataApp
         {
             logHelper.Debug(">> Start Chosing a Folder to save >>");
 
-            FolderBrowserDialog openFolderDialog = new()
+            System.Windows.Forms.FolderBrowserDialog openFolderDialog = new()
             {
                 ShowNewFolderButton = true,
                 Description = "Choose a Folder to Save",
@@ -146,7 +146,7 @@ namespace CrabExcelDataApp
             btnSeperate.IsEnabled = true;
             processBar.Value = 100;
 
-            System.Windows.Forms.MessageBox.Show("Completed", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            System.Windows.Forms.MessageBox.Show("Completed", "Information", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
