@@ -26,8 +26,8 @@
             <RowDefinition Height="10" d:Tag="11" />
             <RowDefinition Height="30" d:Tag="12" />
             <RowDefinition Height="30" d:Tag="13" />
-            <RowDefinition Height="*" d:Tag="13" />
-            <RowDefinition Height="20" d:Tag="14" />
+            <RowDefinition Height="*" d:Tag="14" />
+            <RowDefinition Height="20" d:Tag="15" />
         </Grid.RowDefinitions>
 
         <Grid
@@ -182,7 +182,7 @@
             Text="nmhillusion"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Foreground="#dddddd"
+            Foreground="#333"
             FontStyle="Italic"
             />
     </Grid>

@@ -137,10 +137,14 @@
             Grid.Column="0"
             Grid.Row="8" 
             />
-        <Label 
-           Content="nmhillusion"
+        <TextBlock
             Grid.Column="0"
-            Grid.Row="9" 
+            Grid.Row="15" 
+            Text="nmhillusion"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Foreground="#333"
+            FontStyle="Italic"
             />
     </Grid>
 </UserControl>
