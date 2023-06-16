@@ -5,6 +5,7 @@ using CrabExcelDataApp.Store;
 using CrabExcelDataApp.Validator;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -176,12 +177,61 @@ namespace CrabExcelDataApp.Panel
         {
             int totalFileCount = mergeBackgroundModel.chosenPartialFilePaths.Length;
 
+            var templateHeader = mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader().ElementAt(0);
+            MergeDataService mergeDataService = new(logHelper);
             for (int fileIdx = 0; fileIdx < totalFileCount; ++fileIdx)
             {
+                mergeDataService.AddPartialDataFile(templateHeader, mergeBackgroundModel.chosenPartialFilePaths[fileIdx]);
+
                 float workPercent = fileIdx * 100 / totalFileCount;
                 logHelper.Info($"process: {workPercent}");
 
                 backgroundWorker.ReportProgress((int)workPercent);
+            }
+
+            var totalData = mergeDataService.TotalData;
+            var fileToSavePath = "";
+            do
+            {
+                fileToSavePath = ChooseFileToSave();
+
+                if (string.IsNullOrEmpty(fileToSavePath))
+                {
+                    var dialogResult = System.Windows.Forms.MessageBox.Show(
+                        "Please choose a file to save",
+                        "Error",
+                        System.Windows.Forms.MessageBoxButtons.OKCancel,
+                        System.Windows.Forms.MessageBoxIcon.Information
+                    );
+
+                    if (System.Windows.Forms.DialogResult.Cancel == dialogResult)
+                    {
+                        break;
+                    }
+                }
+            } while (string.IsNullOrEmpty(fileToSavePath));
+
+            excelWriter.WriteToFile(fileToSavePath, "total_data", mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader(), totalData);
+        }
+
+        private string ChooseFileToSave()
+        {
+            logHelper.Debug(">> Start Save Total File Excel >>");
+
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new()
+            {
+                Filter = "Excel 2007 or newer (*.xlsx)|*.xlsx|Prior of Excel 2007 (*.xls)|*.xls",
+                Title = "Save Output Excel File",
+                RestoreDirectory = true,
+            };
+
+            if (true == saveFileDialog.ShowDialog())
+            {
+                return saveFileDialog.FileName;
+            }
+            else
+            {
+                return string.Empty;
             }
         }
     }
