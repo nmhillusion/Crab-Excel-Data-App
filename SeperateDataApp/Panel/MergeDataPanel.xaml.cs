@@ -3,8 +3,8 @@ using CrabExcelDataApp.Service;
 using CrabExcelDataApp.Service.Logger;
 using CrabExcelDataApp.Store;
 using CrabExcelDataApp.Validator;
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -76,7 +76,7 @@ namespace CrabExcelDataApp.Panel
 
             if (true == openFileDialog.ShowDialog())
             {
-                chosenFilePaths = openFileDialog.SafeFileNames;
+                chosenFilePaths = openFileDialog.FileNames;
                 logHelper.Debug($"<< Chosen partial files: {string.Join(";", chosenFilePaths)} <<");
                 inpPartialFiles.Text = string.Join(";", chosenFilePaths);
             }
@@ -111,12 +111,78 @@ namespace CrabExcelDataApp.Panel
                 return;
             }
 
-            DoMergeData();
+            var headers = templateTableStore.GetSheetAt(0).GetHeader();
+
+            if (null == headers || 0 == headers.Count || 0 == headers[0].Count)
+            {
+                System.Windows.Forms.MessageBox.Show(
+                    "Template headers are empty",
+                    "Error",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Error
+                );
+                return;
+            }
+
+            logHelper.Info($"Do Merge Data for [{string.Join(",", chosenFilePaths)}]");
+            StartBackgroundWorker();
         }
 
-        private void DoMergeData()
+        private void StartBackgroundWorker()
         {
-            logHelper.Info($"Do Merge Data for [{string.Join(",", chosenFilePaths)}]");
+            btnMerge.IsEnabled = false;
+            BackgroundWorker backgroundWorker = new();
+            backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
+            backgroundWorker.WorkerReportsProgress = true;
+            backgroundWorker.WorkerSupportsCancellation = true;
+            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
+            backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
+
+            backgroundWorker.RunWorkerAsync(new MergeBackgroundModel
+            {
+                chosenPartialFilePaths = chosenFilePaths,
+                templateTableStore = templateTableStore,
+            });
+        }
+
+        private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            logHelper.Info("process changed");
+            logHelper.Info($"Process changed percent: {e.ProgressPercentage}%");
+            processBar.Value = e.ProgressPercentage;
+        }
+
+        private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logHelper.Info("process completed");
+            btnMerge.IsEnabled = true;
+            processBar.Value = 100;
+
+            System.Windows.Forms.MessageBox.Show(
+                "Completed",
+                "Information",
+                System.Windows.Forms.MessageBoxButtons.OK,
+                System.Windows.Forms.MessageBoxIcon.Information
+            );
+        }
+
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker backgroundWorker = sender as BackgroundWorker;
+            DoMergeData(backgroundWorker, e.Argument as MergeBackgroundModel);
+        }
+
+        private void DoMergeData(BackgroundWorker backgroundWorker, MergeBackgroundModel mergeBackgroundModel)
+        {
+            int totalFileCount = mergeBackgroundModel.chosenPartialFilePaths.Length;
+
+            for (int fileIdx = 0; fileIdx < totalFileCount; ++fileIdx)
+            {
+                float workPercent = fileIdx * 100 / totalFileCount;
+                logHelper.Info($"process: {workPercent}");
+
+                backgroundWorker.ReportProgress((int)workPercent);
+            }
         }
     }
 }
