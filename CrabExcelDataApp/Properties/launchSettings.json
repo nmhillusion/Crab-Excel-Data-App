@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SeperateDataApp": {
+    "CrabExcelDataApp": {
       "commandName": "Project",
       "nativeDebugging": false
     }
