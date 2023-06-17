@@ -7,7 +7,7 @@ namespace CrabExcelDataApp.Service.Logger
     {
         private readonly object owner;
         private readonly LogWriteToFileHelper logWriteToFileHelper = LogWriteToFileHelper.GetInstance();
-        private readonly ListViewLogHelper listViewLogHelper = ListViewLogHelper.GetInstance();
+        private readonly ListViewLogHelper listViewLogHelper = new();
 
         public LogHelper(object owner)
         {

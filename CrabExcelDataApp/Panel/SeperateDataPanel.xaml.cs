@@ -29,7 +29,7 @@ namespace CrabExcelDataApp.Panel
             /// LOGGER
             logHelper = new LogHelper(this);
             logHelper.SetLogListView(listViewLog);
-            logHelper.Debug(">> Start App >>");
+            logHelper.Debug(">> Start Seperate App >>");
 
             /// EVENT
             btnFileToSeperate.Click += BtnSelectFile_Click;
