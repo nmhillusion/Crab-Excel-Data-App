@@ -5,8 +5,8 @@ namespace CrabExcelDataApp.Store
 {
     class TableStore
     {
-        private readonly List<TableModel> data = new();
-        private static readonly TableStore instance = new();
+        private readonly List<TableModel> data = new List<TableModel>();
+        private static readonly TableStore instance = new TableStore();
 
         private TableStore() { }
 

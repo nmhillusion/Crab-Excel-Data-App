@@ -17,8 +17,8 @@ namespace CrabExcelDataApp.Panel
     public partial class MergeDataPanel : UserControl
     {
         private readonly LogHelper logHelper;
-        private readonly ExcelReader excelReader = new();
-        private readonly ExcelWriter excelWriter = new();
+        private readonly ExcelReader excelReader = new ExcelReader();
+        private readonly ExcelWriter excelWriter = new ExcelWriter();
         private readonly TableStore templateTableStore = TableStore.GetInstance();
         private string[] chosenFilePaths;
 
@@ -40,7 +40,7 @@ namespace CrabExcelDataApp.Panel
         {
             logHelper.Debug(">> Start Load File Excel >>");
 
-            Microsoft.Win32.OpenFileDialog openFileDialog = new()
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog()
             {
                 Filter = "Excel 2007 or newer (*.xlsx)|*.xlsx|Prior of Excel 2007 (*.xls)|*.xls",
                 Title = "Choose a Excel File",
@@ -67,7 +67,7 @@ namespace CrabExcelDataApp.Panel
         {
             logHelper.Debug(">> Start Load Partial File Excel >>");
 
-            Microsoft.Win32.OpenFileDialog openFileDialog = new()
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog()
             {
                 Filter = "Excel 2007 or newer (*.xlsx)|*.xlsx|Prior of Excel 2007 (*.xls)|*.xls",
                 Title = "Choose a Excel File",
@@ -132,7 +132,7 @@ namespace CrabExcelDataApp.Panel
         private void StartBackgroundWorker()
         {
             btnMerge.IsEnabled = false;
-            BackgroundWorker backgroundWorker = new();
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
             backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.WorkerSupportsCancellation = true;
@@ -178,7 +178,7 @@ namespace CrabExcelDataApp.Panel
             int totalFileCount = mergeBackgroundModel.chosenPartialFilePaths.Length;
 
             var templateHeader = mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader().ElementAt(0);
-            MergeDataService mergeDataService = new(logHelper);
+            MergeDataService mergeDataService = new MergeDataService(logHelper);
             for (int fileIdx = 0; fileIdx < totalFileCount; ++fileIdx)
             {
                 mergeDataService.AddPartialDataFile(templateHeader, mergeBackgroundModel.chosenPartialFilePaths[fileIdx]);
@@ -218,7 +218,7 @@ namespace CrabExcelDataApp.Panel
         {
             logHelper.Debug(">> Start Save Total File Excel >>");
 
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new()
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog()
             {
                 Filter = "Excel 2007 or newer (*.xlsx)|*.xlsx|Prior of Excel 2007 (*.xls)|*.xls",
                 Title = "Save Output Excel File",

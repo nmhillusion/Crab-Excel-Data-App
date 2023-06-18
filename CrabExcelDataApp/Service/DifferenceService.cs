@@ -7,7 +7,7 @@ namespace CrabExcelDataApp.Service
     {
         public ISet<string> DistinctListObject(IList<object> allValues)
         {
-            SortedSet<string> sortedSet = new();
+            SortedSet<string> sortedSet = new SortedSet<string>();
 
             foreach (object item in allValues)
             {
@@ -19,7 +19,7 @@ namespace CrabExcelDataApp.Service
 
         public List<List<object>> FilterData(TableModel tableModel, int columnIdxToCompare, string targetValueToCompare)
         {
-            List<List<object>> filteredData = new();
+            List<List<object>> filteredData = new List<List<object>>();
 
             List<List<object>> bodyTable = tableModel.GetBody();
 

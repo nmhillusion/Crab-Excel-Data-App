@@ -5,7 +5,7 @@ namespace CrabExcelDataApp.Service.Logger
 {
     internal class LogWriteToFileHelper
     {
-        private static readonly LogWriteToFileHelper instance = new();
+        private static readonly LogWriteToFileHelper instance = new LogWriteToFileHelper();
         private readonly string fileLogPath = "./app.log";
 
         private LogWriteToFileHelper()
@@ -25,10 +25,14 @@ namespace CrabExcelDataApp.Service.Logger
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void AppendNewLineLog(string message)
         {
-            using StreamWriter streamWriter = File.AppendText(fileLogPath);
-            streamWriter.WriteLine(message);
-            streamWriter.Flush();
-            streamWriter.Close();
+            using (StreamWriter streamWriter = File.AppendText(fileLogPath))
+            {
+                streamWriter.WriteLine(message);
+                streamWriter.Flush();
+                streamWriter.Close();
+
+                streamWriter.Dispose();
+            }
         }
     }
 }

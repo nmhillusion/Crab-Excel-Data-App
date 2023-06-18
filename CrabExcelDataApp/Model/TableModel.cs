@@ -6,7 +6,7 @@ namespace CrabExcelDataApp.Model
     {
         public string tableName;
         public int sizeOfHeader = 1;
-        private readonly List<List<object>> tableData = new();
+        private readonly List<List<object>> tableData = new List<List<object>>();
 
         public void SetTableData(List<List<object>> data)
         {
@@ -18,7 +18,7 @@ namespace CrabExcelDataApp.Model
         {
             if (0 < tableData.Count)
             {
-                List<List<object>> headers = new();
+                List<List<object>> headers = new List<List<object>>();
                 headers.AddRange(tableData.GetRange(0, sizeOfHeader));
 
                 return headers;
@@ -36,7 +36,7 @@ namespace CrabExcelDataApp.Model
 
         public List<object> GetDataAtColumnIdx(int columnIdxToGet)
         {
-            List<object> columnData = new();
+            List<object> columnData = new List<object>();
 
             List<List<object>> bodyData = GetBody();
             if (0 <= columnIdxToGet && columnIdxToGet < bodyData.Count)

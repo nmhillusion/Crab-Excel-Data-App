@@ -7,7 +7,7 @@ namespace CrabExcelDataApp.Service
 {
     class MergeDataService
     {
-        private readonly ExcelReader reader = new();
+        private readonly ExcelReader reader = new ExcelReader();
         private readonly LogHelper logHelper;
 
         private List<List<object>> Data;
@@ -47,7 +47,7 @@ namespace CrabExcelDataApp.Service
 
         private Dictionary<string, int> MappingHeadersWithColumns(List<string> templateHeader, Model.TableModel sheet_)
         {
-            Dictionary<string, int> resultDict = new();
+            Dictionary<string, int> resultDict = new Dictionary<string, int>();
             var sheetHeaders = sheet_.GetHeader().ElementAt(0);
 
             foreach (var headerColumn in templateHeader)
@@ -80,7 +80,7 @@ namespace CrabExcelDataApp.Service
                     var sheetData = sheet_.GetBody();
                     foreach (var row_ in sheetData)
                     {
-                        List<object> newRowData = new();
+                        List<object> newRowData = new List<object>();
 
                         foreach (var headerName in templateHeader_)
                         {

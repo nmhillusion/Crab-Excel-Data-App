@@ -17,10 +17,10 @@
 
     class LogLevel : LogLevelBase
     {
-        public static readonly LogLevel DEBUG = new("DEBUG");
-        public static readonly LogLevel INFO = new("INFO");
-        public static readonly LogLevel WARN = new("WARN");
-        public static readonly LogLevel ERROR = new("ERROR");
+        public static readonly LogLevel DEBUG = new LogLevel("DEBUG");
+        public static readonly LogLevel INFO = new LogLevel("INFO");
+        public static readonly LogLevel WARN = new LogLevel("WARN");
+        public static readonly LogLevel ERROR = new LogLevel("ERROR");
 
         private LogLevel(string logLevelValue) : base(logLevelValue) { }
     }

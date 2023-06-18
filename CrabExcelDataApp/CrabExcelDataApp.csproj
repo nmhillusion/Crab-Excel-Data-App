@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows10.0.22621.0</TargetFramework>
-    <TargetPlatformVersion>10</TargetPlatformVersion>
+    <TargetFramework>net48</TargetFramework>
     <UseWPF>true</UseWPF>
     <StartupObject>CrabExcelDataApp.App</StartupObject>
     <ApplicationIcon>logo.ico</ApplicationIcon>
@@ -30,6 +29,9 @@
   <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

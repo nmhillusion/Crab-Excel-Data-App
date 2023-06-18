@@ -10,7 +10,7 @@ namespace CrabExcelDataApp.Service
 
         public ExcelWriter()
         {
-            logHelper = new(this);
+            logHelper = new LogHelper(this);
         }
 
         public void WriteToFile(string excelPathToSave, string sheetName, List<List<object>> headers, List<List<object>> bodyData)
@@ -18,7 +18,7 @@ namespace CrabExcelDataApp.Service
             Microsoft.Office.Interop.Excel._Workbook oWB = null;
             try
             {
-                Microsoft.Office.Interop.Excel.Application oXL = new();
+                Microsoft.Office.Interop.Excel.Application oXL = new Microsoft.Office.Interop.Excel.Application();
                 oWB = oXL.Workbooks.Add(Type.Missing);
                 Microsoft.Office.Interop.Excel.Worksheet oSheet = oWB.Sheets.Add();
 

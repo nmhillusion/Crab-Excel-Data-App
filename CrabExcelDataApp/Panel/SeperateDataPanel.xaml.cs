@@ -17,10 +17,10 @@ namespace CrabExcelDataApp.Panel
     public partial class SeperateDataPanel : UserControl
     {
         private readonly LogHelper logHelper;
-        private readonly ExcelReader excelReader = new();
-        private readonly ExcelWriter excelWriter = new();
+        private readonly ExcelReader excelReader = new ExcelReader();
+        private readonly ExcelWriter excelWriter = new ExcelWriter();
         private readonly TableStore tableStore = TableStore.GetInstance();
-        private readonly DifferenceService differenceService = new();
+        private readonly DifferenceService differenceService = new DifferenceService();
 
         public SeperateDataPanel()
         {
@@ -43,7 +43,7 @@ namespace CrabExcelDataApp.Panel
         {
             logHelper.Debug(">> Start Load File Excel >>");
 
-            Microsoft.Win32.OpenFileDialog openFileDialog = new()
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog()
             {
                 Filter = "Excel 2007 or newer (*.xlsx)|*.xlsx|Prior of Excel 2007 (*.xls)|*.xls",
                 Title = "Choose a Excel File"
@@ -69,11 +69,10 @@ namespace CrabExcelDataApp.Panel
         {
             logHelper.Debug(">> Start Chosing a Folder to save >>");
 
-            System.Windows.Forms.FolderBrowserDialog openFolderDialog = new()
+            System.Windows.Forms.FolderBrowserDialog openFolderDialog = new System.Windows.Forms.FolderBrowserDialog()
             {
                 ShowNewFolderButton = true,
-                Description = "Choose a Folder to Save",
-                UseDescriptionForTitle = true
+                Description = "Choose a Folder to Save"
             };
 
             _ = openFolderDialog.ShowDialog();
@@ -119,14 +118,14 @@ namespace CrabExcelDataApp.Panel
         private void StartBackgroundWorker()
         {
             btnSeperate.IsEnabled = false;
-            BackgroundWorker backgroundWorker = new();
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
             backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
             backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
 
-            SeperateBackgroundModel seperateBackgroundModel = new()
+            SeperateBackgroundModel seperateBackgroundModel = new SeperateBackgroundModel()
             {
                 selectedSheetIdx = cboSheetIdx.SelectedIndex,
                 selectedColumnIdx = cboColumnIdx.SelectedIndex,
@@ -209,7 +208,7 @@ namespace CrabExcelDataApp.Panel
 
             TableModel sheetToSeperate = tableStore.GetSheetAt(selectedSheetIdx);
             List<object> dataAtColumnIdx = sheetToSeperate.GetDataAtColumnIdx(selectedColumnIdx);
-            List<string> allDistinctDataOfSeperateData = new();
+            List<string> allDistinctDataOfSeperateData = new List<string>();
             allDistinctDataOfSeperateData.AddRange(
                 differenceService.DistinctListObject(
                     dataAtColumnIdx
