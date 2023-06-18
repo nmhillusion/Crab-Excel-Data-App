@@ -2,7 +2,9 @@
   "profiles": {
     "CrabExcelDataApp": {
       "commandName": "Project",
-      "nativeDebugging": false
+      "nativeDebugging": false,
+      "sqlDebugging": false,
+      "jsWebView2Debugging": false
     }
   }
 }

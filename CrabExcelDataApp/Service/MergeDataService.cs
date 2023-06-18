@@ -32,7 +32,7 @@ namespace CrabExcelDataApp.Service
         private bool IsValidPartialData(List<string> templateHeader, Model.TableModel sheet_)
         {
             bool result = true;
-            var sheetHeaders = sheet_.GetHeader().ElementAt(0);
+            var sheetHeaders = sheet_.GetHeader();
 
             foreach (var headerColumn in templateHeader)
             {
@@ -49,7 +49,7 @@ namespace CrabExcelDataApp.Service
         private Dictionary<string, int> MappingHeadersWithColumns(List<string> templateHeader, Model.TableModel sheet_)
         {
             Dictionary<string, int> resultDict = new Dictionary<string, int>();
-            var sheetHeaders = sheet_.GetHeader().ElementAt(0);
+            var sheetHeaders = sheet_.GetHeader();
 
             foreach (var headerColumn in templateHeader)
             {

@@ -114,7 +114,7 @@ namespace CrabExcelDataApp.Panel
 
             var headers = templateTableStore.GetSheetAt(0).GetHeader();
 
-            if (null == headers || 0 == headers.Count || 0 == headers[0].Count)
+            if (null == headers || 0 == headers.Count || 0 == headers.Count)
             {
                 System.Windows.Forms.MessageBox.Show(
                     "Template headers are empty",
@@ -177,7 +177,7 @@ namespace CrabExcelDataApp.Panel
         {
             int totalFileCount = mergeBackgroundModel.chosenPartialFilePaths.Length;
 
-            var templateHeader = mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader().ElementAt(0);
+            var templateHeader = mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader();
             MergeDataService mergeDataService = new MergeDataService(logHelper);
             for (int fileIdx = 0; fileIdx < totalFileCount; ++fileIdx)
             {

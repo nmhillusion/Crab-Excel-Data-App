@@ -5,6 +5,7 @@ using CrabExcelDataApp.Store;
 using CrabExcelDataApp.Validator;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -181,18 +182,16 @@ namespace CrabExcelDataApp.Panel
             {
                 TableModel sheetToPush = tableStore.GetSheetAt(selectedSheetIdx);
 
-                List<List<object>> headers = sheetToPush.GetHeader();
+                List<object> headers = sheetToPush.GetHeader();
                 if (0 < headers.Count)
                 {
-                    List<object> header = headers[0];
-
-                    for (int headerCellIdx = 0; headerCellIdx < header.Count; ++headerCellIdx)
+                    for (int headerCellIdx = 0; headerCellIdx < headers.Count; ++headerCellIdx)
                     {
                         cboColumnIdx.Items.Add(
-                            $"{headerCellIdx} - {header[headerCellIdx]}"
+                            $"{headerCellIdx} - {headers[headerCellIdx]}"
                         );
                     }
-                    if (0 < header.Count)
+                    if (0 < headers.Count)
                     {
                         cboColumnIdx.SelectedIndex = 0;
                     }
@@ -207,7 +206,10 @@ namespace CrabExcelDataApp.Panel
             string folderToSavePath = seperateBackgroundModel.folderToSavePath;
 
             TableModel sheetToSeperate = tableStore.GetSheetAt(selectedSheetIdx);
+            Debug.WriteLine($"sheetToSeperate : {string.Join(", ", sheetToSeperate.GetBody())}");
             List<object> dataAtColumnIdx = sheetToSeperate.GetDataAtColumnIdx(selectedColumnIdx);
+            Debug.WriteLine($"dataAtColumnIdx : {string.Join(", ", dataAtColumnIdx)}");
+
             List<string> allDistinctDataOfSeperateData = new List<string>();
             allDistinctDataOfSeperateData.AddRange(
                 differenceService.DistinctListObject(
@@ -215,7 +217,7 @@ namespace CrabExcelDataApp.Panel
                 )
             );
 
-            logHelper.Info("----------- allDistinctDataOfSeperateData ---------------- " + allDistinctDataOfSeperateData.Count);
+            logHelper.Info("----------- allDistinctDataOfSeperateData ---------------- : " + string.Join(", ", allDistinctDataOfSeperateData));
             for (int diffItemIdx = 0; diffItemIdx < allDistinctDataOfSeperateData.Count; ++diffItemIdx)
             {
                 backgroundWorker.ReportProgress(diffItemIdx * 100 / allDistinctDataOfSeperateData.Count);

@@ -15,7 +15,7 @@ namespace CrabExcelDataApp.Service
             logHelper = new LogHelper(this);
         }
 
-        public void WriteToFile(string excelPathToSave, string sheetName, List<List<object>> headers, List<List<object>> bodyData)
+        public void WriteToFile(string excelPathToSave, string sheetName, List<object> headers, List<List<object>> bodyData)
         {
             Microsoft.Office.Interop.Excel._Workbook oWB = null;
             try
@@ -45,15 +45,14 @@ namespace CrabExcelDataApp.Service
             }
         }
 
-        private void SaveDataToCells(Microsoft.Office.Interop.Excel.Range rangeExcelToSave, List<List<object>> headers, List<List<object>> bodyData)
+        private void SaveDataToCells(Microsoft.Office.Interop.Excel.Range rangeExcelToSave, List<object> headers, List<List<object>> bodyData)
         {
             int row = 1;
             int col = 1;
 
             /// SAVE HEADERs
-            foreach (List<object> header in headers)
             {
-                foreach (object iHeader in header)
+                foreach (object iHeader in headers)
                 {
                     rangeExcelToSave[row, col] = iHeader;
                     col += 1;
