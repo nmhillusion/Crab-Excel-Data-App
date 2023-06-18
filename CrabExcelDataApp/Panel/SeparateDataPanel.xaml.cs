@@ -15,7 +15,7 @@ namespace CrabExcelDataApp.Panel
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class SeperateDataPanel : UserControl
+    public partial class SeparateDataPanel : UserControl
     {
         private readonly LogHelper logHelper;
         private readonly ExcelReader excelReader = new ExcelReader();
@@ -23,21 +23,21 @@ namespace CrabExcelDataApp.Panel
         private readonly TableStore tableStore = TableStore.GetInstance();
         private readonly DifferenceService differenceService = new DifferenceService();
 
-        public SeperateDataPanel()
+        public SeparateDataPanel()
         {
             InitializeComponent();
 
             /// LOGGER
             logHelper = new LogHelper(this);
             logHelper.SetLogListView(listViewLog);
-            logHelper.Debug(">> Start Seperate App >>");
+            logHelper.Debug(">> Start Separate App >>");
 
             /// EVENT
-            btnFileToSeperate.Click += BtnSelectFile_Click;
+            btnFileToSeparate.Click += BtnSelectFile_Click;
             cboSheetIdx.SelectionChanged += CboSheetIdx_SelectionChanged;
             btnFolderToSave.Click += BtnFolderToSave_Click;
 
-            btnSeperate.Click += BtnSeperate_Click;
+            btnSeparate.Click += BtnSeparate_Click;
         }
 
         private void BtnSelectFile_Click(object sender, RoutedEventArgs e)
@@ -54,7 +54,7 @@ namespace CrabExcelDataApp.Panel
             {
                 string chosenFilePath = openFileDialog.FileName;
                 logHelper.Debug($"<< Chosen File: {chosenFilePath} <<");
-                inpFileToSeperate.Text = chosenFilePath;
+                inpFileToSeparate.Text = chosenFilePath;
 
                 if (!StringValidator.IsBlank(chosenFilePath))
                 {
@@ -83,7 +83,7 @@ namespace CrabExcelDataApp.Panel
             }
         }
 
-        private void BtnSeperate_Click(object sender, RoutedEventArgs e)
+        private void BtnSeparate_Click(object sender, RoutedEventArgs e)
         {
             int selectedSheetIdx = cboSheetIdx.SelectedIndex;
             int selectedColumnIdx = cboColumnIdx.SelectedIndex;
@@ -91,19 +91,19 @@ namespace CrabExcelDataApp.Panel
 
             if (0 == tableStore.Count)
             {
-                System.Windows.MessageBox.Show("Please select a file to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a file to separate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (-1 == selectedSheetIdx)
             {
-                System.Windows.MessageBox.Show("Please select a sheet to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a sheet to separate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (-1 == selectedColumnIdx)
             {
-                System.Windows.MessageBox.Show("Please select a column to seperate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a column to separate", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -118,7 +118,7 @@ namespace CrabExcelDataApp.Panel
 
         private void StartBackgroundWorker()
         {
-            btnSeperate.IsEnabled = false;
+            btnSeparate.IsEnabled = false;
             BackgroundWorker backgroundWorker = new BackgroundWorker();
             backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
             backgroundWorker.WorkerReportsProgress = true;
@@ -126,25 +126,26 @@ namespace CrabExcelDataApp.Panel
             backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
             backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
 
-            SeperateBackgroundModel seperateBackgroundModel = new SeperateBackgroundModel()
+            SeparateBackgroundModel separateBackgroundModel = new SeparateBackgroundModel()
             {
                 selectedSheetIdx = cboSheetIdx.SelectedIndex,
                 selectedColumnIdx = cboColumnIdx.SelectedIndex,
                 folderToSavePath = inpFolderToSave.Text
             };
-            backgroundWorker.RunWorkerAsync(seperateBackgroundModel);
+            backgroundWorker.RunWorkerAsync(separateBackgroundModel);
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            logHelper.Info($"Percent: {e.ProgressPercentage}%");
+            logHelper.Info($"Progress percent: {e.ProgressPercentage}%");
             processBar.Value = e.ProgressPercentage;
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            btnSeperate.IsEnabled = true;
+            btnSeparate.IsEnabled = true;
             processBar.Value = 100;
+            logHelper.Info("Progress percent: 100% - Completed");
 
             System.Windows.Forms.MessageBox.Show("Completed", "Information", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
         }
@@ -152,7 +153,7 @@ namespace CrabExcelDataApp.Panel
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker backgroundWorker = sender as BackgroundWorker;
-            DoSeperateData(backgroundWorker, e.Argument as SeperateBackgroundModel);
+            DoSeparateData(backgroundWorker, e.Argument as SeparateBackgroundModel);
         }
 
         private void UpdateDataForUI()
@@ -199,30 +200,30 @@ namespace CrabExcelDataApp.Panel
             }
         }
 
-        private void DoSeperateData(BackgroundWorker backgroundWorker, SeperateBackgroundModel seperateBackgroundModel)
+        private void DoSeparateData(BackgroundWorker backgroundWorker, SeparateBackgroundModel separateBackgroundModel)
         {
-            int selectedSheetIdx = seperateBackgroundModel.selectedSheetIdx;
-            int selectedColumnIdx = seperateBackgroundModel.selectedColumnIdx;
-            string folderToSavePath = seperateBackgroundModel.folderToSavePath;
+            int selectedSheetIdx = separateBackgroundModel.selectedSheetIdx;
+            int selectedColumnIdx = separateBackgroundModel.selectedColumnIdx;
+            string folderToSavePath = separateBackgroundModel.folderToSavePath;
 
-            TableModel sheetToSeperate = tableStore.GetSheetAt(selectedSheetIdx);
-            Debug.WriteLine($"sheetToSeperate : {string.Join(", ", sheetToSeperate.GetBody())}");
-            List<object> dataAtColumnIdx = sheetToSeperate.GetDataAtColumnIdx(selectedColumnIdx);
+            TableModel sheetToSeparate = tableStore.GetSheetAt(selectedSheetIdx);
+            Debug.WriteLine($"sheetToSeparate : {string.Join(", ", sheetToSeparate.GetBody())}");
+            List<object> dataAtColumnIdx = sheetToSeparate.GetDataAtColumnIdx(selectedColumnIdx);
             Debug.WriteLine($"dataAtColumnIdx : {string.Join(", ", dataAtColumnIdx)}");
 
-            List<string> allDistinctDataOfSeperateData = new List<string>();
-            allDistinctDataOfSeperateData.AddRange(
+            List<string> allDistinctDataOfSeparateData = new List<string>();
+            allDistinctDataOfSeparateData.AddRange(
                 differenceService.DistinctListObject(
                     dataAtColumnIdx
                 )
             );
 
-            logHelper.Info("----------- allDistinctDataOfSeperateData ---------------- : " + string.Join(", ", allDistinctDataOfSeperateData));
-            for (int diffItemIdx = 0; diffItemIdx < allDistinctDataOfSeperateData.Count; ++diffItemIdx)
+            logHelper.Info("----------- allDistinctDataOfSeparateData ---------------- : " + string.Join(", ", allDistinctDataOfSeparateData));
+            for (int diffItemIdx = 0; diffItemIdx < allDistinctDataOfSeparateData.Count; ++diffItemIdx)
             {
-                backgroundWorker.ReportProgress(diffItemIdx * 100 / allDistinctDataOfSeperateData.Count);
+                backgroundWorker.ReportProgress(diffItemIdx * 100 / allDistinctDataOfSeparateData.Count);
 
-                string diffItem = allDistinctDataOfSeperateData[diffItemIdx];
+                string diffItem = allDistinctDataOfSeparateData[diffItemIdx];
                 logHelper.Info("diffItem: " + diffItem);
 
                 /// CREATE FILE FOR EACH DIFF ITEM
@@ -233,10 +234,10 @@ namespace CrabExcelDataApp.Panel
                 }
 
                 /// FILTER DATA FOR THIS DIFF ITEM
-                List<List<object>> filteredData = differenceService.FilterData(sheetToSeperate, selectedColumnIdx, diffItem);
+                List<List<object>> filteredData = differenceService.FilterData(sheetToSeparate, selectedColumnIdx, diffItem);
 
                 /// SAVE FILTERED DATA TO EXCEL FILE
-                excelWriter.WriteToFile(pathToSaveFile, diffItem, sheetToSeperate.GetHeader(), filteredData);
+                excelWriter.WriteToFile(pathToSaveFile, diffItem, sheetToSeparate.GetHeader(), filteredData);
             }
         }
     }

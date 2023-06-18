@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="CrabExcelDataApp.Panel.SeperateDataPanel"
+﻿<UserControl x:Class="CrabExcelDataApp.Panel.SeparateDataPanel"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -44,7 +44,7 @@
             </Grid.RowDefinitions>
 
             <Label 
-                Content="Select file to seperate:"
+                Content="Select file to separate:"
                 Grid.Column="0"
                 Grid.Row="0" 
                 VerticalAlignment="Bottom"
@@ -54,15 +54,15 @@
                 Grid.Row="1" 
                 IsReadOnly="True"
                 VerticalContentAlignment="Center"
-                x:Name="inpFileToSeperate"
+                x:Name="inpFileToSeparate"
             />
             <Button 
-                x:Name="btnFileToSeperate"
+                x:Name="btnFileToSeparate"
                 Content="..."
                 Grid.Column="1"
                 Grid.Row="1"
                 Cursor="Hand"
-                ToolTip="Select file to seperate"
+                ToolTip="Select file to separate"
             />
         </Grid>
 
@@ -88,7 +88,7 @@
             Grid.Row="4" 
             />
         <Label 
-            Content="Select column to seperate:"
+            Content="Select column to separate:"
             Grid.Column="0"
             Grid.Row="5" 
             VerticalAlignment="Bottom"
@@ -143,10 +143,10 @@
             Grid.Row="9" 
             />
         <Button 
-            x:Name="btnSeperate"
+            x:Name="btnSeparate"
             Grid.Column="0"
             Grid.Row="10"
-            Content="Seperate"
+            Content="Separate"
             VerticalAlignment="Top"
             HorizontalAlignment="Center"
             Width="100"

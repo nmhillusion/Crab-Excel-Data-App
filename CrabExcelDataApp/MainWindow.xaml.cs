@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 
 namespace CrabExcelDataApp
 {
@@ -10,6 +11,7 @@ namespace CrabExcelDataApp
         public MainWindow()
         {
             InitializeComponent();
+            Debug.WriteLine(":: Crab Excel Data App ::");
         }
     }
 }

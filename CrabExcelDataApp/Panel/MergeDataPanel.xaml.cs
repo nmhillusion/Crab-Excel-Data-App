@@ -148,16 +148,15 @@ namespace CrabExcelDataApp.Panel
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            logHelper.Info("process changed");
-            logHelper.Info($"Process changed percent: {e.ProgressPercentage}%");
+            logHelper.Info($"Progress percent: {e.ProgressPercentage}%");
             processBar.Value = e.ProgressPercentage;
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logHelper.Info("process completed");
             btnMerge.IsEnabled = true;
             processBar.Value = 100;
+            logHelper.Info("Progress percent: 100% - Completed");
 
             System.Windows.Forms.MessageBox.Show(
                 "Completed",

@@ -19,10 +19,10 @@
         <TabControl
             Background="{StaticResource AppBackgroundColor}"
             >
-            <TabItem Header="Seperate Data" x:Name="seperateDataTab"
+            <TabItem Header="Separate Data" x:Name="separateDataTab"
                      Background="{StaticResource AppBackgroundColor}"
                      >
-                <localPanel:SeperateDataPanel />
+                <localPanel:SeparateDataPanel />
             </TabItem>
 
             <TabItem Header="Merge Data" x:Name="mergeDataTab"

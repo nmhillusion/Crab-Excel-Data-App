@@ -1,6 +1,6 @@
 ﻿namespace CrabExcelDataApp.Model
 {
-    class SeperateBackgroundModel
+    class SeparateBackgroundModel
     {
         public int selectedSheetIdx;
         public int selectedColumnIdx;

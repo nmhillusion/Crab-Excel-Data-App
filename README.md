@@ -1,6 +1,13 @@
 # Crab Excel Data App
 
+App to help:
+- separate data from a total excel to specific values based on a critical column.
+- merge data from partial excel files with the same template.
+
+
 ## Merge Data
+
+---
 
 Template Data:
 
@@ -22,17 +29,23 @@ Parts of data to merge:
 ![Merge - Part2 - Sheet2](./resource/screenshots/merge_part2_sheet2.png)
 
 
-> Step by step:
+**Step by step:**
 
 ![Merge 1](./resource/screenshots/merge1.png)
 
+select template file and partial excel files to merge. Then click on button `Merge` to start execution and waiting for completion
+
 ![Merge 2](./resource/screenshots/merge2.png)
+
+choose a file to save the combined data
 
 ![Merge 3](./resource/screenshots/merge3.png)
 
+now, it's completed
+
 ![Merge 4](./resource/screenshots/merge4.png)
 
---
+**Result**
 
 Output folder with result file is created `combined_data.xlsx`
 
@@ -42,7 +55,7 @@ And, content of this file will be look like...
 
 ![Merge 6](./resource/screenshots/merge6.png)
 
-## Seperate Data
+## Separate Data
 
 ---
 
@@ -50,24 +63,34 @@ Test Data will look like:
 
 ![Test Data](./resource/screenshots/merge6.png)
 
-Step by step:
+**Step by step:**
 
-![Seperate 1](./resource/screenshots/seperate1.png)
+![Separate 1](./resource/screenshots/separate1.png)
 
-![Seperate 2](./resource/screenshots/seperate2.png)
+![Separate 2](./resource/screenshots/separate2.png)
 
-![Seperate 3](./resource/screenshots/seperate3.png)
+then, select a folder to save the results
 
-![Seperate 4](./resource/screenshots/seperate4.png)
+![Separate 3](./resource/screenshots/separate3.png)
 
-![Seperate 5](./resource/screenshots/seperate5.png)
+click button `Seperate` to start execution
 
-![Seperate 6](./resource/screenshots/seperate6.png)
+![Separate 4](./resource/screenshots/separate4.png)
+
+and waiting to complete
+
+![Separate 5](./resource/screenshots/separate5.png)
+
+now, it's completed
+
+![Separate 6](./resource/screenshots/separate6.png)
+
+**Result**
 
 Result folder:
 
-![Seperate 7](./resource/screenshots/seperate7.png)
+![Separate 7](./resource/screenshots/separate7.png)
 
 in result of `Brazil` country file:
 
-![Seperate 8](./resource/screenshots/seperate8.png)
+![Separate 8](./resource/screenshots/separate8.png)
