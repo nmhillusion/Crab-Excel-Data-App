@@ -2,6 +2,7 @@
 using CrabExcelDataApp.Service;
 using CrabExcelDataApp.Service.Logger;
 using CrabExcelDataApp.Store;
+using CrabExcelDataApp.Util;
 using CrabExcelDataApp.Validator;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -210,7 +211,10 @@ namespace CrabExcelDataApp.Panel
                 }
             } while (string.IsNullOrEmpty(fileToSavePath));
 
-            excelWriter.WriteToFile(fileToSavePath, "total_data", mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader(), totalData);
+            if (!StringValidator.IsBlank(fileToSavePath))
+            {
+                excelWriter.WriteToFile(fileToSavePath, "total_data", mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader(), totalData);
+            }
         }
 
         private string ChooseFileToSave()
