@@ -1,9 +1,11 @@
 # Crab Excel Data App
 
 App to help:
+
 - separate data from a total excel to specific values based on a critical column.
 - merge data from partial excel files with the same template.
 
+> Demo data files in path: [link](./resource/testData/)
 
 ## Merge Data
 
@@ -15,19 +17,21 @@ Template Data:
 
 Parts of data to merge:
 
-[/] Part 1:
+_Part 1:_
 
 - Sheet1
-![Merge - Part1 - Sheet1](./resource/screenshots/merge_part1.png)
 
-[/] Part 2:
+![Merge Part1 Sheet1](./resource/screenshots/merge_part1.png)
+
+_Part 2:_
 
 - Sheet1
-![Merge - Part2 - Sheet1](./resource/screenshots/merge_part2_sheet1.png)
+
+![Merge Part2 Sheet1](./resource/screenshots/merge_part2_sheet1.png)
 
 - Sheet2
-![Merge - Part2 - Sheet2](./resource/screenshots/merge_part2_sheet2.png)
 
+![Merge Part2 Sheet2](./resource/screenshots/merge_part2_sheet2.png)
 
 **Step by step:**
 
