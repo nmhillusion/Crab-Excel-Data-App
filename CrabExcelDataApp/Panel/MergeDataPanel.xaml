@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CrabExcelDataApp.Panel"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             Background="White"
+             d:Height="{StaticResource AppHeight}" 
+             d:Width="{StaticResource AppWidth}"
+             Background="{StaticResource AppBackgroundColor}"
              >
     <Grid
         Margin="8"
@@ -20,8 +21,6 @@
             <RowDefinition Height="30" d:Tag="6" />
             <RowDefinition Height="30" d:Tag="7" />
             <RowDefinition Height="*" d:Tag="8" />
-            <RowDefinition Height="10" d:Tag="9" />
-            <RowDefinition Height="20" d:Tag="10" />
         </Grid.RowDefinitions>
         <Grid
             Grid.Column="0"
@@ -105,9 +104,14 @@
                 Content="Merge"
                 Grid.Column="0"
                 Grid.Row="3"
-                Cursor="Hand"
                 ToolTip="Merge"
-                Width="60"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Width="100"
+                Height="30"
+                Foreground="#eeeeee"
+                Background="#333333"
+                Cursor="Hand"
             />
         <Separator 
             Grid.Column="0"
@@ -132,19 +136,6 @@
             Grid.Column="0"
             Grid.Row="7" 
             x:Name="listViewLog"
-            />
-        <Separator
-            Grid.Column="0"
-            Grid.Row="8" 
-            />
-        <TextBlock
-            Grid.Column="0"
-            Grid.Row="15" 
-            Text="nmhillusion"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Foreground="#333"
-            FontStyle="Italic"
             />
     </Grid>
 </UserControl>

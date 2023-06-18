@@ -2,8 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:CrabExcelDataApp"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             >
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="AppBackgroundColor" Color="#eeeeee"></SolidColorBrush>
+        <system:String x:Key="AppTitle">Crab Excel Data App</system:String>
+        <system:Double x:Key="AppWidth">850</system:Double>
+        <system:Double x:Key="AppHeight">650</system:Double>
     </Application.Resources>
 </Application>

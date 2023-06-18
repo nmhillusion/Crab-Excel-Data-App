@@ -6,14 +6,39 @@
         xmlns:local="clr-namespace:CrabExcelDataApp"
         xmlns:localPanel="clr-namespace:CrabExcelDataApp.Panel"
         mc:Ignorable="d"
-        Title="Crab Excel Data" Height="620" Width="830">
-    <TabControl>
-        <TabItem Header="Seperate Data" x:Name="seperateDataTab">
-            <localPanel:SeperateDataPanel />
-        </TabItem>
+        Title="{StaticResource AppTitle}" 
+        Height="{StaticResource AppHeight}" 
+        Width="{StaticResource AppWidth}"
+        Background="{StaticResource AppBackgroundColor}"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" d:Tag="1" />
+            <RowDefinition Height="20" d:Tag="1" />
+        </Grid.RowDefinitions>
+        <TabControl
+            Background="{StaticResource AppBackgroundColor}"
+            >
+            <TabItem Header="Seperate Data" x:Name="seperateDataTab"
+                     Background="{StaticResource AppBackgroundColor}"
+                     >
+                <localPanel:SeperateDataPanel />
+            </TabItem>
 
-        <TabItem Header="Merge Data" x:Name="mergeDataTab">
-            <localPanel:MergeDataPanel />
-        </TabItem>
-    </TabControl>
+            <TabItem Header="Merge Data" x:Name="mergeDataTab"
+                     Background="{StaticResource AppBackgroundColor}">
+                <localPanel:MergeDataPanel />
+            </TabItem>
+        </TabControl>
+
+        <TextBlock
+                Grid.Column="0"
+                Grid.Row="15" 
+                Text="nmhillusion"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Foreground="#dddddd"
+                FontStyle="Italic"
+                />
+    </Grid>
 </Window>

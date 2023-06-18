@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CrabExcelDataApp"
         mc:Ignorable="d"
-        Height="550" Width="800"
-        Background="#eeeeee"
+        d:Height="{StaticResource AppHeight}" 
+        d:Width="{StaticResource AppWidth}"
+        Background="{StaticResource AppBackgroundColor}"
         >
     <Grid 
         Margin="8"
@@ -27,7 +28,6 @@
             <RowDefinition Height="30" d:Tag="12" />
             <RowDefinition Height="30" d:Tag="13" />
             <RowDefinition Height="*" d:Tag="14" />
-            <RowDefinition Height="20" d:Tag="15" />
         </Grid.RowDefinitions>
 
         <Grid
@@ -177,15 +177,6 @@
             Grid.Column="0"
             Grid.Row="14" 
             x:Name="listViewLog"
-            />
-        <TextBlock
-            Grid.Column="0"
-            Grid.Row="15" 
-            Text="nmhillusion"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Foreground="#333"
-            FontStyle="Italic"
             />
     </Grid>
 </UserControl>
