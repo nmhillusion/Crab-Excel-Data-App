@@ -1,6 +1,8 @@
 ﻿using CrabExcelDataApp.Service.Logger;
+using CrabExcelDataApp.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CrabExcelDataApp.Service
 {
@@ -43,7 +45,7 @@ namespace CrabExcelDataApp.Service
             }
         }
 
-        private static void SaveDataToCells(Microsoft.Office.Interop.Excel.Range rangeExcelToSave, List<List<object>> headers, List<List<object>> bodyData)
+        private void SaveDataToCells(Microsoft.Office.Interop.Excel.Range rangeExcelToSave, List<List<object>> headers, List<List<object>> bodyData)
         {
             int row = 1;
             int col = 1;
@@ -63,9 +65,11 @@ namespace CrabExcelDataApp.Service
             /// SAVE BODY DATA
             foreach (List<object> rowData in bodyData)
             {
+                Debug.WriteLine(this.GetType().Name + " - read data from excel: " + string.Join(", ", rowData));
                 foreach (object cellData in rowData)
                 {
-                    rangeExcelToSave[row, col] = cellData;
+                    rangeExcelToSave[row, col].NumberFormat = "@";
+                    rangeExcelToSave[row, col] = StringUtil.ToString(cellData);
                     col += 1;
                 }
                 col = 1;

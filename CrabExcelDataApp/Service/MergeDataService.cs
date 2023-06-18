@@ -1,4 +1,5 @@
 ﻿using CrabExcelDataApp.Service.Logger;
+using CrabExcelDataApp.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,7 +86,7 @@ namespace CrabExcelDataApp.Service
                         foreach (var headerName in templateHeader_)
                         {
                             var colIdx = mappingHeadersColumns[headerName];
-                            newRowData.Add(row_[colIdx]);
+                            newRowData.Add(StringUtil.ToString(row_[colIdx]));
                         }
 
                         Data.Add(newRowData);

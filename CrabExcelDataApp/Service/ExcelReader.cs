@@ -4,6 +4,7 @@ using ExcelDataReader;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 
 namespace CrabExcelDataApp.Service
@@ -34,7 +35,10 @@ namespace CrabExcelDataApp.Service
                     logHelper.Info("ResultsCount: " + reader.ResultsCount);
                     logHelper.Info("RowCount: " + reader.RowCount);
 
-                    dataSet = reader.AsDataSet();
+                    dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
+                    {
+                        UseColumnDataType = true
+                    });
                 }
 
                 DataTableCollection dataTables = dataSet.Tables;
@@ -57,6 +61,7 @@ namespace CrabExcelDataApp.Service
 
                         List<object> rowData = new List<object>();
                         rowData.AddRange(dataRow.ItemArray);
+                        Debug.WriteLine(this.GetType().Name + " - read data from excel: " + string.Join(", ", rowData));
 
                         tableData.Add(rowData);
                     }
