@@ -1,6 +1,6 @@
 ﻿namespace CrabExcelDataApp.Validator
 {
-    class StringValidator
+    public class StringValidator
     {
         public static bool IsBlank(string input)
         {

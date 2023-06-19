@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net4.8</TargetFramework>
     <UseWPF>true</UseWPF>
     <StartupObject>CrabExcelDataApp.App</StartupObject>
     <ApplicationIcon>logo.ico</ApplicationIcon>

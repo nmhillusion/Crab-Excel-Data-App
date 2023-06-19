@@ -1,6 +1,6 @@
 ﻿namespace CrabExcelDataApp.Util
 {
-    abstract class StringUtil
+    public abstract class StringUtil
     {
         public static string ToString(object obj)
         {
