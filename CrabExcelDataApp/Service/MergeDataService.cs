@@ -67,9 +67,9 @@ namespace CrabExcelDataApp.Service
             return resultDict;
         }
 
-        public MergeDataService AddPartialDataFile(List<object> templateHeader, string partialFilePath)
+        public MergeDataService AddPartialDataFile(List<object> templateHeader, string partialFilePath, bool isIgnoreHiddenRows)
         {
-            List<Model.TableModel> sheets = reader.ReadData(partialFilePath);
+            List<Model.TableModel> sheets = reader.ReadData(partialFilePath, isIgnoreHiddenRows: isIgnoreHiddenRows);
             List<string> templateHeader_ = templateHeader.Select(it => it.ToString().Trim()).ToList();
 
             foreach (var sheet_ in sheets)

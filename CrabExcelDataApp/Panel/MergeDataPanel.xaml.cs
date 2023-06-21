@@ -20,6 +20,7 @@ namespace CrabExcelDataApp.Panel
         private readonly ExcelWriter excelWriter = new ExcelWriter();
         private readonly TableStore templateTableStore = TableStore.GetInstance();
         private string[] chosenFilePaths;
+        private bool isIgnoreHiddenRows;
 
         public MergeDataPanel()
         {
@@ -124,6 +125,8 @@ namespace CrabExcelDataApp.Panel
                 return;
             }
 
+            this.isIgnoreHiddenRows = chxIgnoreHiddenRows.IsChecked ?? false;
+
             logHelper.Info($"Do Merge Data for [{string.Join(",", chosenFilePaths)}]");
             StartBackgroundWorker();
         }
@@ -179,7 +182,11 @@ namespace CrabExcelDataApp.Panel
             MergeDataService mergeDataService = new MergeDataService(logHelper);
             for (int fileIdx = 0; fileIdx < totalFileCount; ++fileIdx)
             {
-                mergeDataService.AddPartialDataFile(templateHeader, mergeBackgroundModel.chosenPartialFilePaths[fileIdx]);
+                mergeDataService.AddPartialDataFile(
+                    templateHeader,
+                    mergeBackgroundModel.chosenPartialFilePaths[fileIdx],
+                    this.isIgnoreHiddenRows
+                );
 
                 float workPercent = fileIdx * 100 / totalFileCount;
                 logHelper.Info($"process: {workPercent}");
