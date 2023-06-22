@@ -126,43 +126,47 @@ namespace CrabExcelDataApp.Service
 
                 foreach (Worksheet worksheet in workbook.Worksheets)
                 {
-                    int lastRow = 1;
-                    int lastColumn = 1;
+                    Range firstCell_ = getFirstDataCell(worksheet);
+                    Range lastCell_ = getLastDataCell(worksheet, firstCell_);
+                    logHelper.Info($"first cell: [{firstCell_.Row}, {firstCell_.Column}]");
+                    logHelper.Info($"last cell: [{lastCell_.Row}, {lastCell_.Column}]");
+                    //int lastRow = 1;
+                    //int lastColumn = 1;
 
-                    logHelper.Info($"lastRow: {lastRow}");
-                    logHelper.Info($"lastColumn: {lastColumn}");
+                    //logHelper.Info($"lastRow: {lastRow}");
+                    //logHelper.Info($"lastColumn: {lastColumn}");
 
-                    List<List<object>> sheetData = new List<List<object>>();
+                    //List<List<object>> sheetData = new List<List<object>>();
 
-                    for (int rowNum = 1; rowNum <= lastRow; ++rowNum)
-                    {
-                        if (null == worksheet.Cells[rowNum, 1].Value)
-                        {
-                            logHelper.Warn($"Ignore row #{rowNum}");
-                            continue;
-                        }
+                    //for (int rowNum = 1; rowNum <= lastRow; ++rowNum)
+                    //{
+                    //    if (null == worksheet.Cells[rowNum, 1].Value)
+                    //    {
+                    //        logHelper.Warn($"Ignore row #{rowNum}");
+                    //        continue;
+                    //    }
 
-                        Range row_ = worksheet.Rows[rowNum];
+                    //    Range row_ = worksheet.Rows[rowNum];
 
-                        if (!row_.Hidden)
-                        {
-                            List<object> rowData = new List<object>();
-                            for (int colNum = 1; colNum <= lastColumn; ++colNum)
-                            {
-                                Range cell_ = worksheet.Cells[rowNum, colNum];
-                                rowData.Add(cell_.Value);
-                            }
-                            logHelper.Info("read data from excel: " + string.Join(", ", rowData));
-                            sheetData.Add(rowData);
-                        }
-                    }
+                    //    if (!row_.Hidden)
+                    //    {
+                    //        List<object> rowData = new List<object>();
+                    //        for (int colNum = 1; colNum <= lastColumn; ++colNum)
+                    //        {
+                    //            Range cell_ = worksheet.Cells[rowNum, colNum];
+                    //            rowData.Add(cell_.Value);
+                    //        }
+                    //        logHelper.Info("read data from excel: " + string.Join(", ", rowData));
+                    //        sheetData.Add(rowData);
+                    //    }
+                    //}
 
-                    TableModel model = new TableModel()
-                    {
-                        tableName = worksheet.Name
-                    };
-                    model.SetTableData(sheetData);
-                    totalData.Add(model);
+                    //TableModel model = new TableModel()
+                    //{
+                    //    tableName = worksheet.Name
+                    //};
+                    //model.SetTableData(sheetData);
+                    //totalData.Add(model);
 
                     Marshal.ReleaseComObject(worksheet);
                 }
@@ -194,10 +198,81 @@ namespace CrabExcelDataApp.Service
         {
             Range firstCell = worksheet.Cells[1, 1];
 
+            if (0 < worksheet.Application.WorksheetFunction.CountA(firstCell))
+            {
+                return firstCell;
+            }
+
             int lastRow = firstCell.End[XlDirection.xlDown].Row;
             int lastColumn = firstCell.End[XlDirection.xlToRight].Column;
-            // TODO: impl
-            return null;
+
+            int maxDepth = Math.Max(lastRow, lastColumn);
+
+            int foundRowNum = -1;
+            int foundColumnNum = -1;
+
+            for (int depthNum = 1; depthNum <= maxDepth; ++depthNum)
+            {
+                if (-1 == foundRowNum && 0 < worksheet.Application.WorksheetFunction.CountA(worksheet.Rows[depthNum]))
+                {
+                    foundRowNum = depthNum;
+                }
+
+                if (-1 == foundColumnNum && 0 < worksheet.Application.WorksheetFunction.CountA(worksheet.Columns[depthNum]))
+                {
+                    foundColumnNum = depthNum;
+                }
+
+                if (-1 != foundRowNum && -1 != foundColumnNum)
+                {
+                    firstCell = worksheet.Cells[foundRowNum, foundColumnNum];
+                    break;
+                }
+            }
+
+            return firstCell;
+        }
+
+        private Range getLastDataCell(Worksheet worksheet, Range firstDataCell_)
+        {
+            Range firstCell = worksheet.Cells[1, 1];
+            int lastRow = firstCell.End[XlDirection.xlDown].Row;
+            int lastColumn = firstCell.End[XlDirection.xlToRight].Column;
+
+            Range lastCell = worksheet.Cells[lastRow, lastColumn];
+
+            if (0 < worksheet.Application.WorksheetFunction.CountA(lastCell) || null == firstDataCell_)
+            {
+                return lastCell;
+            }
+
+            //int maxDepth = Math.Max(lastRow, lastColumn);
+
+            int foundRowNum = -1;
+            int foundColumnNum = -1;
+
+            for (int rowNum = firstDataCell_.Row + 1; rowNum < lastRow && -1 == foundRowNum; ++rowNum)
+            {
+                if (0 == worksheet.Application.WorksheetFunction.CountA(worksheet.Rows[rowNum]))
+                {
+                    foundRowNum = rowNum;
+                }
+            }
+
+            for (int columnNum = firstDataCell_.Column + 1; columnNum < lastColumn && -1 == foundColumnNum; ++columnNum)
+            {
+                if (0 == worksheet.Application.WorksheetFunction.CountA(worksheet.Columns[columnNum]))
+                {
+                    foundColumnNum = columnNum;
+                }
+            }
+
+            if (1 < foundRowNum && 1 < foundColumnNum)
+            {
+                lastCell = worksheet.Cells[foundRowNum - 1, foundColumnNum - 1];
+            }
+
+            return lastCell;
         }
     }
 }
