@@ -77,16 +77,21 @@ namespace CrabExcelDataApp.Service
                     for (int rowIdx = 0; rowIdx < dataRowCollection.Count; ++rowIdx)
                     {
                         DataRow dataRow = dataRowCollection[rowIdx];
-
+                        if (dataRow.IsNull(0))
+                        {
+                            continue;
+                        }
                         List<object> rowData = new List<object>();
                         rowData.AddRange(dataRow.ItemArray);
-                        Debug.WriteLine(this.GetType().Name + " - read data from excel: " + string.Join(", ", rowData));
+                        logHelper.Info(" read data from excel: " + string.Join(", ", rowData));
 
                         tableData.Add(rowData);
                     }
 
-                    TableModel tableModel = new TableModel();
-                    tableModel.tableName = dataTable.TableName;
+                    TableModel tableModel = new TableModel
+                    {
+                        tableName = dataTable.TableName
+                    };
                     tableModel.SetTableData(tableData);
 
                     totalData.Add(tableModel);
@@ -116,24 +121,27 @@ namespace CrabExcelDataApp.Service
                 List<TableModel> totalData = new List<TableModel>();
 
                 int sheetCount = workbook.Worksheets.Count;
-                logHelper.Info($" sheetCount: {sheetCount}");
+                logHelper.Info($"sheetCount: {sheetCount}");
 
 
                 foreach (Worksheet worksheet in workbook.Worksheets)
                 {
-                    Range firstCell = worksheet.Cells[1, 1];
-                    Range lastCellInColumn = firstCell.End[XlDirection.xlDown];
-                    Range lastCellInRow = firstCell.End[XlDirection.xlToRight];
+                    int lastRow = 1;
+                    int lastColumn = 1;
 
-                    int lastRow = lastCellInColumn.Row;
-                    int lastColumn = lastCellInRow.Column;
-                    logHelper.Info($" lastRow: {lastRow}");
-                    logHelper.Info($" lastColumn: {lastColumn}");
+                    logHelper.Info($"lastRow: {lastRow}");
+                    logHelper.Info($"lastColumn: {lastColumn}");
 
                     List<List<object>> sheetData = new List<List<object>>();
 
                     for (int rowNum = 1; rowNum <= lastRow; ++rowNum)
                     {
+                        if (null == worksheet.Cells[rowNum, 1].Value)
+                        {
+                            logHelper.Warn($"Ignore row #{rowNum}");
+                            continue;
+                        }
+
                         Range row_ = worksheet.Rows[rowNum];
 
                         if (!row_.Hidden)
@@ -144,6 +152,7 @@ namespace CrabExcelDataApp.Service
                                 Range cell_ = worksheet.Cells[rowNum, colNum];
                                 rowData.Add(cell_.Value);
                             }
+                            logHelper.Info("read data from excel: " + string.Join(", ", rowData));
                             sheetData.Add(rowData);
                         }
                     }
@@ -154,6 +163,8 @@ namespace CrabExcelDataApp.Service
                     };
                     model.SetTableData(sheetData);
                     totalData.Add(model);
+
+                    Marshal.ReleaseComObject(worksheet);
                 }
 
                 return totalData;
@@ -177,6 +188,16 @@ namespace CrabExcelDataApp.Service
                     Marshal.ReleaseComObject(excelApp);
                 }
             }
+        }
+
+        private Range getFirstDataCell(Worksheet worksheet)
+        {
+            Range firstCell = worksheet.Cells[1, 1];
+
+            int lastRow = firstCell.End[XlDirection.xlDown].Row;
+            int lastColumn = firstCell.End[XlDirection.xlToRight].Column;
+            // TODO: impl
+            return null;
         }
     }
 }
