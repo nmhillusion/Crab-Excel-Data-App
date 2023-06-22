@@ -1,4 +1,5 @@
-﻿using CrabExcelDataApp.Service.Logger;
+﻿using CrabExcelDataApp.Model;
+using CrabExcelDataApp.Service.Logger;
 using CrabExcelDataApp.Util;
 using System;
 using System.Collections.Generic;
@@ -67,9 +68,9 @@ namespace CrabExcelDataApp.Service
             return resultDict;
         }
 
-        public MergeDataService AddPartialDataFile(List<object> templateHeader, string partialFilePath, bool isIgnoreHiddenRows)
+        public MergeDataService AddPartialDataFile(List<object> templateHeader, string partialFilePath, ExcelFilterModel mergeFilterModel)
         {
-            List<Model.TableModel> sheets = reader.ReadData(partialFilePath, isIgnoreHiddenRows: isIgnoreHiddenRows);
+            List<Model.TableModel> sheets = reader.ReadData(partialFilePath, mergeFilterModel);
             List<string> templateHeader_ = templateHeader.Select(it => it.ToString().Trim()).ToList();
 
             foreach (var sheet_ in sheets)

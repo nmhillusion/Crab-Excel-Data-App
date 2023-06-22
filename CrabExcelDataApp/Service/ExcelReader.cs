@@ -5,7 +5,6 @@ using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -23,18 +22,22 @@ namespace CrabExcelDataApp.Service
 
         public List<TableModel> ReadData(string excelFilePath)
         {
-            return ReadData(excelFilePath, true);
+            return ReadData(excelFilePath, new ExcelFilterModel()
+            {
+                isStandardTemplate = true,
+                isFilterIgnoreHiddenRows = false,
+            });
         }
 
-        public List<TableModel> ReadData(string excelFilePath, bool isIgnoreHiddenRows)
+        public List<TableModel> ReadData(string excelFilePath, ExcelFilterModel excelFilterModel)
         {
-            if (!isIgnoreHiddenRows)
+            if (excelFilterModel.isStandardTemplate && !excelFilterModel.isFilterIgnoreHiddenRows)
             {
                 return ReadDataAllRows(excelFilePath);
             }
             else
             {
-                return ReadDataAndIgnoreHiddenRows(excelFilePath);
+                return ReadDataWithAdvantageFilters(excelFilePath, excelFilterModel);
             }
         }
 
@@ -106,7 +109,7 @@ namespace CrabExcelDataApp.Service
             }
         }
 
-        public List<TableModel> ReadDataAndIgnoreHiddenRows(string excelFilePath)
+        public List<TableModel> ReadDataWithAdvantageFilters(string excelFilePath, ExcelFilterModel excelFilterModel)
         {
             logHelper.Info("Read Excel at " + excelFilePath);
 
@@ -126,47 +129,39 @@ namespace CrabExcelDataApp.Service
 
                 foreach (Worksheet worksheet in workbook.Worksheets)
                 {
-                    Range firstCell_ = getFirstDataCell(worksheet);
-                    Range lastCell_ = getLastDataCell(worksheet, firstCell_);
+                    Range firstCell_ = GetFirstDataCell(worksheet);
+                    Range lastCell_ = GetLastDataCell(worksheet, firstCell_);
                     logHelper.Info($"first cell: [{firstCell_.Row}, {firstCell_.Column}]");
                     logHelper.Info($"last cell: [{lastCell_.Row}, {lastCell_.Column}]");
-                    //int lastRow = 1;
-                    //int lastColumn = 1;
 
-                    //logHelper.Info($"lastRow: {lastRow}");
-                    //logHelper.Info($"lastColumn: {lastColumn}");
+                    logHelper.Info($"lastRow: {lastCell_.Row}");
+                    logHelper.Info($"lastColumn: {lastCell_.Column}");
 
-                    //List<List<object>> sheetData = new List<List<object>>();
+                    List<List<object>> sheetData = new List<List<object>>();
 
-                    //for (int rowNum = 1; rowNum <= lastRow; ++rowNum)
-                    //{
-                    //    if (null == worksheet.Cells[rowNum, 1].Value)
-                    //    {
-                    //        logHelper.Warn($"Ignore row #{rowNum}");
-                    //        continue;
-                    //    }
+                    for (int rowNum = firstCell_.Row; rowNum <= lastCell_.Row; ++rowNum)
+                    {
+                        Range row_ = worksheet.Rows[rowNum];
 
-                    //    Range row_ = worksheet.Rows[rowNum];
+                        if (IsValidHiddenCondition(row_, excelFilterModel))
+                        {
+                            List<object> rowData = new List<object>();
+                            for (int colNum = firstCell_.Column; colNum <= lastCell_.Column; ++colNum)
+                            {
+                                Range cell_ = worksheet.Cells[rowNum, colNum];
+                                rowData.Add(cell_.Value);
+                            }
+                            logHelper.Info("read data from excel: " + string.Join(", ", rowData));
+                            sheetData.Add(rowData);
+                        }
+                    }
 
-                    //    if (!row_.Hidden)
-                    //    {
-                    //        List<object> rowData = new List<object>();
-                    //        for (int colNum = 1; colNum <= lastColumn; ++colNum)
-                    //        {
-                    //            Range cell_ = worksheet.Cells[rowNum, colNum];
-                    //            rowData.Add(cell_.Value);
-                    //        }
-                    //        logHelper.Info("read data from excel: " + string.Join(", ", rowData));
-                    //        sheetData.Add(rowData);
-                    //    }
-                    //}
-
-                    //TableModel model = new TableModel()
-                    //{
-                    //    tableName = worksheet.Name
-                    //};
-                    //model.SetTableData(sheetData);
-                    //totalData.Add(model);
+                    TableModel model = new TableModel()
+                    {
+                        tableName = worksheet.Name
+                    };
+                    model.SetTableData(sheetData);
+                    totalData.Add(model);
 
                     Marshal.ReleaseComObject(worksheet);
                 }
@@ -194,7 +189,12 @@ namespace CrabExcelDataApp.Service
             }
         }
 
-        private Range getFirstDataCell(Worksheet worksheet)
+        private bool IsValidHiddenCondition(Range range_, ExcelFilterModel excelFilterModel)
+        {
+            return !excelFilterModel.isFilterIgnoreHiddenRows || !range_.Hidden;
+        }
+
+        private Range GetFirstDataCell(Worksheet worksheet)
         {
             Range firstCell = worksheet.Cells[1, 1];
 
@@ -233,7 +233,7 @@ namespace CrabExcelDataApp.Service
             return firstCell;
         }
 
-        private Range getLastDataCell(Worksheet worksheet, Range firstDataCell_)
+        private Range GetLastDataCell(Worksheet worksheet, Range firstDataCell_)
         {
             Range firstCell = worksheet.Cells[1, 1];
             int lastRow = firstCell.End[XlDirection.xlDown].Row;
@@ -245,8 +245,6 @@ namespace CrabExcelDataApp.Service
             {
                 return lastCell;
             }
-
-            //int maxDepth = Math.Max(lastRow, lastColumn);
 
             int foundRowNum = -1;
             int foundColumnNum = -1;

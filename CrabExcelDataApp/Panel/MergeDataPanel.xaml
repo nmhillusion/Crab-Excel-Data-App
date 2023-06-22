@@ -99,7 +99,21 @@
             Grid.Column="0"
             Grid.Row="2"
             >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
             <CheckBox VerticalAlignment="Center"
+                      Grid.Row="0"
+                      Grid.Column="0"
+                      IsChecked="True"
+                      Content="Standard template" x:Name="chxStandardTemplate" />
+            <CheckBox VerticalAlignment="Center"
+                      Grid.Row="0"
+                      Grid.Column="1"
                       Content="Ignore hidden rows" x:Name="chxIgnoreHiddenRows" />
         </Grid>
 

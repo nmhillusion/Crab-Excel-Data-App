@@ -20,7 +20,11 @@ namespace CrabExcelDataApp.Panel
         private readonly ExcelWriter excelWriter = new ExcelWriter();
         private readonly TableStore templateTableStore = TableStore.GetInstance();
         private string[] chosenFilePaths;
-        private bool isIgnoreHiddenRows;
+        private readonly ExcelFilterModel mergeFilterModel = new ExcelFilterModel()
+        {
+            isStandardTemplate = true,
+            isFilterIgnoreHiddenRows = false,
+        };
 
         public MergeDataPanel()
         {
@@ -125,7 +129,8 @@ namespace CrabExcelDataApp.Panel
                 return;
             }
 
-            this.isIgnoreHiddenRows = chxIgnoreHiddenRows.IsChecked ?? false;
+            this.mergeFilterModel.isStandardTemplate = chxStandardTemplate.IsChecked ?? false;
+            this.mergeFilterModel.isFilterIgnoreHiddenRows = chxIgnoreHiddenRows.IsChecked ?? false;
 
             logHelper.Info($"Do Merge Data for [{string.Join(",", chosenFilePaths)}]");
             StartBackgroundWorker();
@@ -185,7 +190,7 @@ namespace CrabExcelDataApp.Panel
                 mergeDataService.AddPartialDataFile(
                     templateHeader,
                     mergeBackgroundModel.chosenPartialFilePaths[fileIdx],
-                    this.isIgnoreHiddenRows
+                    this.mergeFilterModel
                 );
 
                 float workPercent = fileIdx * 100 / totalFileCount;
