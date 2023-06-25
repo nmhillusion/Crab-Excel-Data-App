@@ -3,6 +3,7 @@ using CrabExcelDataApp.Service;
 using CrabExcelDataApp.Service.Logger;
 using CrabExcelDataApp.Store;
 using CrabExcelDataApp.Validator;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
@@ -129,8 +130,30 @@ namespace CrabExcelDataApp.Panel
                 return;
             }
 
-            this.mergeFilterModel.isStandardTemplate = chxStandardTemplate.IsChecked ?? false;
-            this.mergeFilterModel.isFilterIgnoreHiddenRows = chxIgnoreHiddenRows.IsChecked ?? false;
+            int startRowNum = 0;
+
+            try
+            {
+                if (!int.TryParse(excelFilter__inpStartRowNum.Text, out startRowNum) ||
+                    startRowNum < 1)
+                {
+                    throw new Exception("Parse start row number fail! please re-check");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(
+                    "Error when parse start row number: " + ex.Message,
+                    "Error",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Error
+                );
+                return;
+            }
+
+            this.mergeFilterModel.isStandardTemplate = excelFilter__chxStandardTemplate.IsChecked ?? false;
+            this.mergeFilterModel.isFilterIgnoreHiddenRows = excelFilter__chxIgnoreHiddenRows.IsChecked ?? false;
+            this.mergeFilterModel.startRowNum = startRowNum;
 
             logHelper.Info($"Do Merge Data for [{string.Join(",", chosenFilePaths)}]");
             StartBackgroundWorker();

@@ -15,7 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60" d:Tag="1" />
             <RowDefinition Height="60" d:Tag="2" />
-            <RowDefinition Height="30" d:Tag="3" />
+            <RowDefinition Height="60" d:Tag="3" />
             <RowDefinition Height="10" d:Tag="4" />
             <RowDefinition Height="30" d:Tag="5" />
             <RowDefinition Height="10" d:Tag="6" />
@@ -102,19 +102,35 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <CheckBox VerticalAlignment="Center"
                       Grid.Row="0"
                       Grid.Column="0"
                       IsChecked="True"
-                      Content="Standard template" x:Name="chxStandardTemplate" />
+                      Content="Standard template" 
+                      x:Name="excelFilter__chxStandardTemplate" />
+            <DockPanel
+                VerticalAlignment="Center"
+                Grid.Row="0"
+                Grid.Column="1" 
+                >
+                <Label Content="Start Row Num"
+                       DockPanel.Dock="Top"
+                       />
+                <TextBox
+                    Text="1"
+                     x:Name="excelFilter__inpStartRowNum"
+                     />
+            </DockPanel>
             <CheckBox VerticalAlignment="Center"
                       Grid.Row="0"
-                      Grid.Column="1"
-                      Content="Ignore hidden rows" x:Name="chxIgnoreHiddenRows" />
+                      Grid.Column="2"
+                      Content="Ignore hidden rows" 
+                      x:Name="excelFilter__chxIgnoreHiddenRows" />
         </Grid>
 
         <Separator 

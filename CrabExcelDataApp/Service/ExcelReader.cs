@@ -26,6 +26,7 @@ namespace CrabExcelDataApp.Service
             {
                 isStandardTemplate = true,
                 isFilterIgnoreHiddenRows = false,
+                startRowNum = 1,
             });
         }
 
@@ -33,7 +34,7 @@ namespace CrabExcelDataApp.Service
         {
             if (excelFilterModel.isStandardTemplate && !excelFilterModel.isFilterIgnoreHiddenRows)
             {
-                return ReadDataAllRows(excelFilePath);
+                return ReadDataAllRows(excelFilePath, excelFilterModel);
             }
             else
             {
@@ -41,7 +42,7 @@ namespace CrabExcelDataApp.Service
             }
         }
 
-        public List<TableModel> ReadDataAllRows(string excelFilePath)
+        public List<TableModel> ReadDataAllRows(string excelFilePath, ExcelFilterModel excelFilterModel)
         {
             logHelper.Info("Read Excel at " + excelFilePath);
             try
@@ -71,13 +72,14 @@ namespace CrabExcelDataApp.Service
                 {
                     System.Data.DataTable dataTable = dataTables[tableIdx];
                     DataRowCollection dataRowCollection = dataTable.Rows;
+                    int startRowIndex = Math.Max(0, excelFilterModel.startRowNum - 1);
 
                     logHelper.Debug("Table Name: " + dataTable.TableName);
 
 
                     List<List<object>> tableData = new List<List<object>>();
 
-                    for (int rowIdx = 0; rowIdx < dataRowCollection.Count; ++rowIdx)
+                    for (int rowIdx = startRowIndex; rowIdx < dataRowCollection.Count; ++rowIdx)
                     {
                         DataRow dataRow = dataRowCollection[rowIdx];
                         if (dataRow.IsNull(0))
@@ -138,8 +140,9 @@ namespace CrabExcelDataApp.Service
                     logHelper.Info($"lastColumn: {lastCell_.Column}");
 
                     List<List<object>> sheetData = new List<List<object>>();
+                    int startRowNum = Math.Max(firstCell_.Row, excelFilterModel.startRowNum);
 
-                    for (int rowNum = firstCell_.Row; rowNum <= lastCell_.Row; ++rowNum)
+                    for (int rowNum = startRowNum; rowNum <= lastCell_.Row; ++rowNum)
                     {
                         Range row_ = worksheet.Rows[rowNum];
 
@@ -175,17 +178,10 @@ namespace CrabExcelDataApp.Service
             }
             finally
             {
-                if (null != workbook)
-                {
-                    workbook.Close();
-                    Marshal.ReleaseComObject(workbook);
-                }
-
-                if (null != excelApp)
-                {
-                    excelApp.Quit();
-                    Marshal.ReleaseComObject(excelApp);
-                }
+                workbook?.Close();
+                excelApp?.Quit();
+                Marshal.ReleaseComObject(workbook);
+                Marshal.ReleaseComObject(excelApp);
             }
         }
 
