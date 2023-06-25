@@ -52,37 +52,23 @@ namespace CrabExcelDataApp.Service
 
         private void SaveDataToCells(Microsoft.Office.Interop.Excel.Worksheet oSheet, List<object> headers, List<List<object>> bodyData)
         {
-            int row = 1;
-            int col = 1;
+            int rowNum = 1;
 
             /// SAVE HEADERs
             {
-                Microsoft.Office.Interop.Excel.Range startRange = oSheet.Cells[1, 1];
-                Microsoft.Office.Interop.Excel.Range endRange = oSheet.Cells[1, headers.Count];
+                Microsoft.Office.Interop.Excel.Range startRange = oSheet.Cells[rowNum, 1];
+                Microsoft.Office.Interop.Excel.Range endRange = oSheet.Cells[rowNum, headers.Count];
                 oSheet.Range[startRange, endRange].Value = headers.ToArray();
-                row += 1;
+                rowNum += 1;
             }
 
             /// SAVE BODY DATA
             {
-                Microsoft.Office.Interop.Excel.Range startRange = oSheet.Cells[row, 1];
+                Microsoft.Office.Interop.Excel.Range startRange = oSheet.Cells[rowNum, 1];
                 Microsoft.Office.Interop.Excel.Range endRange = oSheet.Cells[bodyData.Count, headers.Count];
                 Microsoft.Office.Interop.Excel.Range dataRange_ = oSheet.Range[startRange, endRange];
                 dataRange_.NumberFormat = "@";
                 dataRange_.Value = ToArrayData(bodyData);
-                ///
-                //foreach (List<object> rowData in bodyData)
-                //{
-                //    //Debug.WriteLine(this.GetType().Name + " - read data from excel: " + string.Join(", ", rowData));
-                //    foreach (object cellData in rowData)
-                //    {
-                //        rangeExcelToSave[row, col].NumberFormat = "@";
-                //        rangeExcelToSave[row, col] = StringUtil.ToString(cellData);
-                //        col += 1;
-                //    }
-                //    col = 1;
-                //    row += 1;
-                //}
             }
         }
 
