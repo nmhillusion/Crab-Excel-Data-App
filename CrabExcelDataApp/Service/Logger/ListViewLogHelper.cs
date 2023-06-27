@@ -20,25 +20,23 @@ namespace CrabExcelDataApp.Service.Logger
             logListView = _logListView;
         }
 
-        //[MethodImpl(MethodImplOptions.Synchronized)]
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void AddLogToListView(string messageLog)
         {
-            Debug.WriteLine($"[pre] insert log to list view container -> {messageLog}");
-            logListView?.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+            logListView?.Dispatcher.InvokeAsync(() =>
+            {
+
+                if (MAX_LOG_LINES < logListView.Items.Count)
                 {
-                    Debug.WriteLine($"insert log to list view container: {logListView} -> {messageLog}");
-                    if (MAX_LOG_LINES < logListView.Items.Count)
-                    {
-                        logListView.Items.RemoveAt(0);
-                    }
+                    logListView.Items.RemoveAt(0);
+                }
 
-                    logListView.Items.Add(
-                        messageLog
-                    );
+                logListView.Items.Add(
+                    messageLog
+                );
 
-                    logListView.ScrollIntoView(messageLog);
-                    Debug.WriteLine("<< insert log to list view container");
-                })
+                logListView.ScrollIntoView(messageLog);
+            }
             );
         }
     }

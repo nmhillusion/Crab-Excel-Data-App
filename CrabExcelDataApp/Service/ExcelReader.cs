@@ -58,6 +58,8 @@ namespace CrabExcelDataApp.Service
         public List<TableModel> ReadDataAllRows(string excelFilePath, ExcelFilterModel excelFilterModel)
         {
             logHelper.Info("Read Excel at " + excelFilePath);
+            string excelFileName = Path.GetFileName(excelFilePath);
+
             try
             {
                 DataSet dataSet = null;
@@ -101,7 +103,7 @@ namespace CrabExcelDataApp.Service
                         }
                         List<object> rowData = new List<object>();
                         rowData.AddRange(dataRow.ItemArray);
-                        logHelper.Info(" read data from excel: " + string.Join(", ", rowData));
+                        logHelper.Info($"[{excelFileName}][{dataTable.TableName}][{rowIdx + 1}] read data from excel: " + string.Join(", ", rowData));
 
                         tableData.Add(rowData);
                     }
@@ -127,6 +129,7 @@ namespace CrabExcelDataApp.Service
         public List<TableModel> ReadDataWithAdvantageFilters(string excelFilePath, ExcelFilterModel excelFilterModel)
         {
             logHelper.Info("Read Excel at " + excelFilePath);
+            string excelFileName = Path.GetFileName(excelFilePath);
 
             Application excelApp = null;
             Workbook workbook = null;
@@ -167,7 +170,7 @@ namespace CrabExcelDataApp.Service
                                 Range cell_ = worksheet.Cells[rowNum, colNum];
                                 rowData.Add(cell_.Value);
                             }
-                            logHelper.Info("read data from excel: " + string.Join(", ", rowData));
+                            logHelper.Info($"[{excelFileName}][{worksheet.Name}][{rowNum}] read data from excel: " + string.Join(", ", rowData));
                             sheetData.Add(rowData);
                         }
                     }

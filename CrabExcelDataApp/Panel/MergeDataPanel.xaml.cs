@@ -207,6 +207,7 @@ namespace CrabExcelDataApp.Panel
 
         private void DoMergeData(BackgroundWorker backgroundWorker, MergeBackgroundModel mergeBackgroundModel)
         {
+            backgroundWorker.ReportProgress(0);
             int totalFileCount = mergeBackgroundModel.chosenPartialFilePaths.Length;
 
             var templateHeader = mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader();
@@ -220,7 +221,6 @@ namespace CrabExcelDataApp.Panel
                 );
 
                 float workPercent = fileIdx * 100 / totalFileCount;
-                logHelper.Info($"process: {workPercent}");
 
                 backgroundWorker.ReportProgress((int)workPercent);
             }
