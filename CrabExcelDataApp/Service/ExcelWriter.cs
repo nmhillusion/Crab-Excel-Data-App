@@ -65,7 +65,7 @@ namespace CrabExcelDataApp.Service
             /// SAVE BODY DATA
             {
                 Microsoft.Office.Interop.Excel.Range startRange = oSheet.Cells[rowNum, 1];
-                Microsoft.Office.Interop.Excel.Range endRange = oSheet.Cells[bodyData.Count, headers.Count];
+                Microsoft.Office.Interop.Excel.Range endRange = oSheet.Cells[bodyData.Count + startRange.Row - 1, headers.Count];
                 Microsoft.Office.Interop.Excel.Range dataRange_ = oSheet.Range[startRange, endRange];
                 dataRange_.NumberFormat = "@";
                 dataRange_.Value = ToArrayData(bodyData);
