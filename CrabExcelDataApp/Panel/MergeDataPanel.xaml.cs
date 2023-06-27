@@ -17,8 +17,8 @@ namespace CrabExcelDataApp.Panel
     public partial class MergeDataPanel : UserControl
     {
         private readonly LogHelper logHelper;
-        private readonly ExcelReader excelReader = new ExcelReader();
-        private readonly ExcelWriter excelWriter = new ExcelWriter();
+        private readonly ExcelReader excelReader;
+        private readonly ExcelWriter excelWriter;
         private readonly TableStore templateTableStore = TableStore.GetInstance();
         private string[] chosenFilePaths;
         private readonly ExcelFilterModel mergeFilterModel = new ExcelFilterModel()
@@ -30,6 +30,9 @@ namespace CrabExcelDataApp.Panel
         public MergeDataPanel()
         {
             InitializeComponent();
+
+            excelReader = new ExcelReader(listViewLog);
+            excelWriter = new ExcelWriter(listViewLog);
 
             /// LOGGER
             logHelper = new LogHelper(this);

@@ -113,24 +113,26 @@
                       IsChecked="True"
                       Content="Standard template" 
                       x:Name="excelFilter__chxStandardTemplate" />
+            <CheckBox VerticalAlignment="Center"
+                      Grid.Row="0"
+                      Grid.Column="1"
+                      Content="Ignore hidden rows" 
+                      x:Name="excelFilter__chxIgnoreHiddenRows" />
             <DockPanel
                 VerticalAlignment="Center"
                 Grid.Row="0"
-                Grid.Column="1" 
+                Grid.Column="2" 
                 >
                 <Label Content="Start Row Num"
-                       DockPanel.Dock="Top"
+                       DockPanel.Dock="Left"
                        />
                 <TextBox
                     Text="1"
+                    VerticalAlignment="Center"
+                    AcceptsReturn="False"
                      x:Name="excelFilter__inpStartRowNum"
                      />
             </DockPanel>
-            <CheckBox VerticalAlignment="Center"
-                      Grid.Row="0"
-                      Grid.Column="2"
-                      Content="Ignore hidden rows" 
-                      x:Name="excelFilter__chxIgnoreHiddenRows" />
         </Grid>
 
         <Separator 

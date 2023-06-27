@@ -18,14 +18,17 @@ namespace CrabExcelDataApp.Panel
     public partial class SeparateDataPanel : UserControl
     {
         private readonly LogHelper logHelper;
-        private readonly ExcelReader excelReader = new ExcelReader();
-        private readonly ExcelWriter excelWriter = new ExcelWriter();
+        private readonly ExcelReader excelReader;
+        private readonly ExcelWriter excelWriter;
         private readonly TableStore tableStore = TableStore.GetInstance();
         private readonly DifferenceService differenceService = new DifferenceService();
 
         public SeparateDataPanel()
         {
             InitializeComponent();
+
+            excelReader = new ExcelReader(listViewLog);
+            excelWriter = new ExcelWriter(listViewLog);
 
             /// LOGGER
             logHelper = new LogHelper(this);

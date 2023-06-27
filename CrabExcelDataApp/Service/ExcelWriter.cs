@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Controls;
 
 namespace CrabExcelDataApp.Service
 {
@@ -11,9 +12,17 @@ namespace CrabExcelDataApp.Service
     {
         private readonly LogHelper logHelper;
 
-        public ExcelWriter()
+        public ExcelWriter() : this(null)
+        {
+        }
+
+        public ExcelWriter(ListView listView)
         {
             logHelper = new LogHelper(this);
+            if (null != listView)
+            {
+                logHelper.SetLogListView(listView);
+            }
         }
 
         public void WriteToFile(string excelPathToSave, string sheetName, List<object> headers, List<List<object>> bodyData)
@@ -74,6 +83,10 @@ namespace CrabExcelDataApp.Service
 
         private string[,] ToArrayData(List<List<object>> bodyData)
         {
+            if (0 == bodyData.Count)
+            {
+                return new string[0, 0] { };
+            }
             string[,] result_ = new string[bodyData.Count, bodyData.ElementAt(0).Count];
             for (int rowIdx = 0; rowIdx < bodyData.Count; ++rowIdx)
             {

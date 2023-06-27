@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 
 namespace CrabExcelDataApp.Service.Logger
@@ -20,10 +21,9 @@ namespace CrabExcelDataApp.Service.Logger
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void AddLogToListView(string messageLog)
         {
-            if (null != logListView)
-            {
-                logListView.Dispatcher.InvokeAsync(() =>
+            logListView?.Dispatcher.InvokeAsync(() =>
                 {
+                    Debug.WriteLine($"insert log to list view container: {logListView} -> {messageLog}");
                     if (MAX_LOG_LINES < logListView.Items.Count)
                     {
                         logListView.Items.RemoveAt(0);
@@ -34,8 +34,8 @@ namespace CrabExcelDataApp.Service.Logger
                     );
 
                     logListView.ScrollIntoView(messageLog);
+                    Debug.WriteLine("<< insert log to list view container");
                 });
-            }
         }
     }
 }

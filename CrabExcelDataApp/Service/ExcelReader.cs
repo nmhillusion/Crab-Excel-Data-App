@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows.Controls;
 
 namespace CrabExcelDataApp.Service
 {
@@ -14,9 +15,18 @@ namespace CrabExcelDataApp.Service
     {
         private readonly LogHelper logHelper;
 
-        public ExcelReader()
+        public ExcelReader() : this(null)
+        {
+        }
+
+        public ExcelReader(ListView listView)
         {
             logHelper = new LogHelper(this);
+            if (null != listView)
+            {
+                logHelper.SetLogListView(listView);
+            }
+
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
 
@@ -131,8 +141,8 @@ namespace CrabExcelDataApp.Service
 
                 foreach (Worksheet worksheet in workbook.Worksheets)
                 {
-                    Range firstCell_ = GetFirstDataCell(worksheet);
-                    Range lastCell_ = GetLastDataCell(worksheet, firstCell_);
+                    Range firstCell_ = GetFirstDataCell(worksheet, excelFilterModel);
+                    Range lastCell_ = GetLastDataCell(worksheet, excelFilterModel, firstCell_);
                     logHelper.Info($"first cell: [{firstCell_.Row}, {firstCell_.Column}]");
                     logHelper.Info($"last cell: [{lastCell_.Row}, {lastCell_.Column}]");
 
@@ -190,9 +200,10 @@ namespace CrabExcelDataApp.Service
             return !excelFilterModel.isFilterIgnoreHiddenRows || !range_.Hidden;
         }
 
-        private Range GetFirstDataCell(Worksheet worksheet)
+        private Range GetFirstDataCell(Worksheet worksheet, ExcelFilterModel excelFilterModel)
         {
-            Range firstCell = worksheet.Cells[1, 1];
+            int startRow = Math.Max(1, excelFilterModel.startRowNum);
+            Range firstCell = worksheet.Cells[startRow, 1];
 
             if (0 < worksheet.Application.WorksheetFunction.CountA(firstCell))
             {
@@ -209,12 +220,14 @@ namespace CrabExcelDataApp.Service
 
             for (int depthNum = 1; depthNum <= maxDepth; ++depthNum)
             {
-                if (-1 == foundRowNum && 0 < worksheet.Application.WorksheetFunction.CountA(worksheet.Rows[depthNum]))
+                int currentCheckingRowNum = Math.Max(depthNum, startRow);
+                if (-1 == foundRowNum && 0 < worksheet.Application.WorksheetFunction.CountA(worksheet.Rows[currentCheckingRowNum]))
                 {
                     foundRowNum = depthNum;
                 }
 
-                if (-1 == foundColumnNum && 0 < worksheet.Application.WorksheetFunction.CountA(worksheet.Columns[depthNum]))
+                int currentCheckingColumnNum = depthNum;
+                if (-1 == foundColumnNum && 0 < worksheet.Application.WorksheetFunction.CountA(worksheet.Columns[currentCheckingColumnNum]))
                 {
                     foundColumnNum = depthNum;
                 }
@@ -229,9 +242,10 @@ namespace CrabExcelDataApp.Service
             return firstCell;
         }
 
-        private Range GetLastDataCell(Worksheet worksheet, Range firstDataCell_)
+        private Range GetLastDataCell(Worksheet worksheet, ExcelFilterModel excelFilterModel, Range firstDataCell_)
         {
-            Range firstCell = worksheet.Cells[1, 1];
+            int startRow = Math.Max(1, excelFilterModel.startRowNum);
+            Range firstCell = worksheet.Cells[startRow, 1];
             int lastRow = firstCell.End[XlDirection.xlDown].Row;
             int lastColumn = firstCell.End[XlDirection.xlToRight].Column;
 
