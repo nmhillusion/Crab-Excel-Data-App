@@ -16,12 +16,15 @@ namespace CrabExcelDataApp.Service
         {
         }
 
-        public ExcelWriter(ListView listView)
+        public ExcelWriter(LogHelper logHelper)
         {
-            logHelper = new LogHelper(this);
-            if (null != listView)
+            if (null != logHelper)
             {
-                logHelper.SetLogListView(listView);
+                this.logHelper = logHelper;
+            }
+            else
+            {
+                this.logHelper = new LogHelper(this);
             }
         }
 

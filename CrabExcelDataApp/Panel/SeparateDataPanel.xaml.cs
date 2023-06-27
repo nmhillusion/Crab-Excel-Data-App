@@ -27,13 +27,13 @@ namespace CrabExcelDataApp.Panel
         {
             InitializeComponent();
 
-            excelReader = new ExcelReader(listViewLog);
-            excelWriter = new ExcelWriter(listViewLog);
-
             /// LOGGER
             logHelper = new LogHelper(this);
             logHelper.SetLogListView(listViewLog);
             logHelper.Debug(">> Start Separate App >>");
+
+            excelReader = new ExcelReader(logHelper);
+            excelWriter = new ExcelWriter(logHelper);
 
             /// EVENT
             btnFileToSeparate.Click += BtnSelectFile_Click;

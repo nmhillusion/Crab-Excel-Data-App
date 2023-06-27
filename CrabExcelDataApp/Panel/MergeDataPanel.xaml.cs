@@ -31,13 +31,13 @@ namespace CrabExcelDataApp.Panel
         {
             InitializeComponent();
 
-            excelReader = new ExcelReader(listViewLog);
-            excelWriter = new ExcelWriter(listViewLog);
-
             /// LOGGER
             logHelper = new LogHelper(this);
             logHelper.SetLogListView(listViewLog);
             logHelper.Debug(">> Start Merge App >>");
+
+            excelReader = new ExcelReader(logHelper);
+            excelWriter = new ExcelWriter(logHelper);
 
             btnTemplateFile.Click += BtnTemplateFile_Click;
             btnPartialFiles.Click += BtnPartialFiles_Click;
@@ -210,7 +210,7 @@ namespace CrabExcelDataApp.Panel
             int totalFileCount = mergeBackgroundModel.chosenPartialFilePaths.Length;
 
             var templateHeader = mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader();
-            MergeDataService mergeDataService = new MergeDataService(logHelper);
+            MergeDataService mergeDataService = new MergeDataService(this.logHelper, this.excelReader);
             for (int fileIdx = 0; fileIdx < totalFileCount; ++fileIdx)
             {
                 mergeDataService.AddPartialDataFile(

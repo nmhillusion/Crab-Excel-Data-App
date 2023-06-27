@@ -19,12 +19,15 @@ namespace CrabExcelDataApp.Service
         {
         }
 
-        public ExcelReader(ListView listView)
+        public ExcelReader(LogHelper logHelper)
         {
-            logHelper = new LogHelper(this);
-            if (null != listView)
+            if (null != logHelper)
             {
-                logHelper.SetLogListView(listView);
+                this.logHelper = logHelper;
+            }
+            else
+            {
+                this.logHelper = new LogHelper(this);
             }
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);

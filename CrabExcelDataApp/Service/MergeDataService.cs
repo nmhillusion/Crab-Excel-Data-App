@@ -9,7 +9,7 @@ namespace CrabExcelDataApp.Service
 {
     class MergeDataService
     {
-        private readonly ExcelReader reader = new ExcelReader();
+        private readonly ExcelReader reader;
         private readonly LogHelper logHelper;
 
         private List<List<object>> Data;
@@ -24,10 +24,11 @@ namespace CrabExcelDataApp.Service
             }
         }
 
-        public MergeDataService(LogHelper logHelper)
+        public MergeDataService(LogHelper logHelper, ExcelReader excelReader)
         {
             Data = new List<List<object>>();
             this.logHelper = logHelper;
+            this.reader = excelReader;
         }
 
         private bool IsValidPartialData(List<string> templateHeader, Model.TableModel sheet_)
