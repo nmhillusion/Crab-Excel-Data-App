@@ -6,5 +6,6 @@ namespace CrabExcelDataApp.Model
     {
         public TableStore templateTableStore;
         public string[] chosenPartialFilePaths;
+        public string fileToSavePath;
     }
 }

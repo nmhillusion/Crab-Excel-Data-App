@@ -159,10 +159,40 @@ namespace CrabExcelDataApp.Panel
             this.mergeFilterModel.startRowNum = startRowNum;
 
             logHelper.Info($"Do Merge Data for [{string.Join(",", chosenFilePaths)}]");
-            StartBackgroundWorker();
+
+            var fileToSavePath = "";
+            do
+            {
+                fileToSavePath = ChooseFileToSave();
+
+                if (string.IsNullOrEmpty(fileToSavePath))
+                {
+                    var dialogResult = System.Windows.Forms.MessageBox.Show(
+                        "Please choose a file to save",
+                        "Error",
+                        System.Windows.Forms.MessageBoxButtons.OKCancel,
+                        System.Windows.Forms.MessageBoxIcon.Information
+                    );
+
+                    if (System.Windows.Forms.DialogResult.Cancel == dialogResult)
+                    {
+                        break;
+                    }
+                }
+            } while (string.IsNullOrEmpty(fileToSavePath));
+
+
+            if (!string.IsNullOrEmpty(fileToSavePath))
+            {
+                StartBackgroundWorker(fileToSavePath);
+            }
+            else
+            {
+                logHelper.Warn("Stop execution because you dont choose saved file.");
+            }
         }
 
-        private void StartBackgroundWorker()
+        private void StartBackgroundWorker(string fileToSavePath)
         {
             btnMerge.IsEnabled = false;
             BackgroundWorker backgroundWorker = new BackgroundWorker();
@@ -176,6 +206,7 @@ namespace CrabExcelDataApp.Panel
             {
                 chosenPartialFilePaths = chosenFilePaths,
                 templateTableStore = templateTableStore,
+                fileToSavePath = fileToSavePath
             });
         }
 
@@ -226,30 +257,10 @@ namespace CrabExcelDataApp.Panel
             }
 
             var totalData = mergeDataService.TotalData;
-            var fileToSavePath = "";
-            do
+
+            if (!StringValidator.IsBlank(mergeBackgroundModel.fileToSavePath))
             {
-                fileToSavePath = ChooseFileToSave();
-
-                if (string.IsNullOrEmpty(fileToSavePath))
-                {
-                    var dialogResult = System.Windows.Forms.MessageBox.Show(
-                        "Please choose a file to save",
-                        "Error",
-                        System.Windows.Forms.MessageBoxButtons.OKCancel,
-                        System.Windows.Forms.MessageBoxIcon.Information
-                    );
-
-                    if (System.Windows.Forms.DialogResult.Cancel == dialogResult)
-                    {
-                        break;
-                    }
-                }
-            } while (string.IsNullOrEmpty(fileToSavePath));
-
-            if (!StringValidator.IsBlank(fileToSavePath))
-            {
-                excelWriter.WriteToFile(fileToSavePath, "total_data", mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader(), totalData);
+                excelWriter.WriteToFile(mergeBackgroundModel.fileToSavePath, "total_data", mergeBackgroundModel.templateTableStore.GetSheetAt(0).GetHeader(), totalData);
             }
         }
 
