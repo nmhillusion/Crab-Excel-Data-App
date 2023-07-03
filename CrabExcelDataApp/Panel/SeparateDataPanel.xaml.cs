@@ -61,7 +61,7 @@ namespace CrabExcelDataApp.Panel
 
                 if (!StringValidator.IsBlank(chosenFilePath))
                 {
-                    List<TableModel> readData = excelReader.ReadData(chosenFilePath);
+                    List<TableModel> readData = excelReader.ReadData<string>(chosenFilePath);
                     tableStore.SetData(readData);
 
                     UpdateDataForUI();

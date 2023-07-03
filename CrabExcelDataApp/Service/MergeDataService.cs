@@ -71,8 +71,8 @@ namespace CrabExcelDataApp.Service
 
         public MergeDataService AddPartialDataFile(List<object> templateHeader, string partialFilePath, ExcelFilterModel mergeFilterModel)
         {
-            List<Model.TableModel> sheets = reader.ReadData(partialFilePath, mergeFilterModel);
             List<string> templateHeader_ = templateHeader.Select(it => it.ToString().Trim()).ToList();
+            List<Model.TableModel> sheets = reader.ReadData(partialFilePath, mergeFilterModel, templateHeader_);
 
             foreach (var sheet_ in sheets)
             {

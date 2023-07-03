@@ -4,6 +4,5 @@
     {
         public bool isStandardTemplate;
         public bool isFilterIgnoreHiddenRows;
-        public int startRowNum = -1;
     }
 }

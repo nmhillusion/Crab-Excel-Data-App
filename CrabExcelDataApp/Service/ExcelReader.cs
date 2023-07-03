@@ -3,9 +3,11 @@ using CrabExcelDataApp.Service.Logger;
 using ExcelDataReader;
 using Microsoft.Office.Interop.Excel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Controls;
 
@@ -33,29 +35,97 @@ namespace CrabExcelDataApp.Service
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
 
-        public List<TableModel> ReadData(string excelFilePath)
+        public List<TableModel> ReadData<T>(string excelFilePath)
         {
-            return ReadData(excelFilePath, new ExcelFilterModel()
+            return ReadData<T>(excelFilePath, new ExcelFilterModel()
             {
                 isStandardTemplate = true,
                 isFilterIgnoreHiddenRows = false,
-                startRowNum = 1,
             });
         }
 
-        public List<TableModel> ReadData(string excelFilePath, ExcelFilterModel excelFilterModel)
+        public List<TableModel> ReadData<T>(string excelFilePath, ExcelFilterModel excelFilterModel)
+        {
+            return ReadData<T>(excelFilePath, excelFilterModel, null);
+        }
+
+        public List<TableModel> ReadData<T>(string excelFilePath, ExcelFilterModel excelFilterModel, List<T> startHeaderTemplate)
         {
             if (excelFilterModel.isStandardTemplate && !excelFilterModel.isFilterIgnoreHiddenRows)
             {
-                return ReadDataAllRows(excelFilePath, excelFilterModel);
+                return ReadDataAllRows(excelFilePath, excelFilterModel, startHeaderTemplate);
             }
             else
             {
-                return ReadDataWithAdvantageFilters(excelFilePath, excelFilterModel);
+                return ReadDataWithAdvantageFilters(excelFilePath, excelFilterModel, startHeaderTemplate);
             }
         }
 
-        public List<TableModel> ReadDataAllRows(string excelFilePath, ExcelFilterModel excelFilterModel)
+        private int FindStartRowNum<T>(System.Data.DataTable sheetData, List<T> startHeaderTemplate)
+        {
+            int rowNum = -1;
+
+            if (null == startHeaderTemplate || 0 == startHeaderTemplate.Count)
+            {
+                return 0;
+            }
+
+            var rows = sheetData.Rows;
+            for (int rowIdx = 0; rowIdx < rows.Count; ++rowIdx)
+            {
+                var rowData = rows[rowIdx];
+                object[] cells = rowData.ItemArray;
+                List<object> list_ = new List<object>(cells);
+
+                if (startHeaderTemplate.All(it => list_.Contains(it)))
+                {
+                    rowNum = rowIdx + 1;
+                    break;
+                }
+            }
+
+            logHelper.Info($"Found started row num is: {rowNum}");
+            return rowNum;
+        }
+
+        private int FindStartRowNum<T>(Worksheet sheetData, List<T> startHeaderTemplate)
+        {
+            int rowNum = -1;
+
+            if (null == startHeaderTemplate || 0 == startHeaderTemplate.Count)
+            {
+                return 0;
+            }
+
+            int rowCount = sheetData.UsedRange.Rows.Count;
+            for (int rowNum_ = sheetData.UsedRange.Row; rowNum_ <= rowCount; ++rowNum_)
+            {
+                //logHelper.Debug($"Checking on row: {rowNum_}");
+                Range rowRange = sheetData.Rows[rowNum_];
+                object[,] rowData2 = rowRange.Value2;
+                List<object> firstRowData = new List<object>();
+                for (int cellCol = 1; cellCol <= rowData2.Length; ++cellCol)
+                {
+                    var cellData = rowData2[1, cellCol];
+
+                    if (null != cellData && !string.IsNullOrEmpty(cellData.ToString()))
+                    {
+                        firstRowData.Add(cellData);
+                    }
+                }
+
+                if (startHeaderTemplate.All(it => firstRowData.Contains(it)))
+                {
+                    rowNum = rowNum_;
+                    break;
+                }
+            }
+
+            logHelper.Info($"Found started row num is: {rowNum}");
+            return rowNum;
+        }
+
+        public List<TableModel> ReadDataAllRows<T>(string excelFilePath, ExcelFilterModel excelFilterModel, List<T> startHeaderTemplate)
         {
             logHelper.Info("Read Excel at " + excelFilePath);
             string excelFileName = Path.GetFileName(excelFilePath);
@@ -86,8 +156,17 @@ namespace CrabExcelDataApp.Service
                 for (int tableIdx = 0; tableIdx < dataTables.Count; ++tableIdx)
                 {
                     System.Data.DataTable dataTable = dataTables[tableIdx];
+
+                    int startRowNum = FindStartRowNum(dataTable, startHeaderTemplate);
+                    if (-1 == startRowNum)
+                    {
+                        logHelper.Warn("This sheet is not valid, jump to the next sheet.");
+                        continue;
+                    }
+
+
                     DataRowCollection dataRowCollection = dataTable.Rows;
-                    int startRowIndex = Math.Max(0, excelFilterModel.startRowNum - 1);
+                    int startRowIndex = Math.Max(0, startRowNum - 1);
 
                     logHelper.Debug("Table Name: " + dataTable.TableName);
 
@@ -126,7 +205,7 @@ namespace CrabExcelDataApp.Service
             }
         }
 
-        public List<TableModel> ReadDataWithAdvantageFilters(string excelFilePath, ExcelFilterModel excelFilterModel)
+        public List<TableModel> ReadDataWithAdvantageFilters<T>(string excelFilePath, ExcelFilterModel excelFilterModel, List<T> startHeaderTemplate)
         {
             logHelper.Info("Read Excel at " + excelFilePath);
             string excelFileName = Path.GetFileName(excelFilePath);
@@ -147,8 +226,15 @@ namespace CrabExcelDataApp.Service
 
                 foreach (Worksheet worksheet in workbook.Worksheets)
                 {
-                    Range firstCell_ = GetFirstDataCell(worksheet, excelFilterModel);
-                    Range lastCell_ = GetLastDataCell(worksheet, excelFilterModel, firstCell_);
+                    int startRowNum_ = FindStartRowNum(worksheet, startHeaderTemplate);
+                    if (-1 == startRowNum_)
+                    {
+                        logHelper.Warn("This sheet is not valid, jump to the next sheet.");
+                        continue;
+                    }
+
+                    Range firstCell_ = GetFirstDataCell(worksheet, excelFilterModel, startRowNum_);
+                    Range lastCell_ = GetLastDataCell(worksheet, excelFilterModel, firstCell_, startRowNum_);
                     logHelper.Info($"first cell: [{firstCell_.Row}, {firstCell_.Column}]");
                     logHelper.Info($"last cell: [{lastCell_.Row}, {lastCell_.Column}]");
 
@@ -156,7 +242,7 @@ namespace CrabExcelDataApp.Service
                     logHelper.Info($"lastColumn: {lastCell_.Column}");
 
                     List<List<object>> sheetData = new List<List<object>>();
-                    int startRowNum = Math.Max(firstCell_.Row, excelFilterModel.startRowNum);
+                    int startRowNum = Math.Max(firstCell_.Row, startRowNum_);
 
                     for (int rowNum = startRowNum; rowNum <= lastCell_.Row; ++rowNum)
                     {
@@ -168,7 +254,7 @@ namespace CrabExcelDataApp.Service
                             for (int colNum = firstCell_.Column; colNum <= lastCell_.Column; ++colNum)
                             {
                                 Range cell_ = worksheet.Cells[rowNum, colNum];
-                                rowData.Add(cell_.Value);
+                                rowData.Add(cell_.Value2);
                             }
                             logHelper.Info($"[{excelFileName}][{worksheet.Name}][{rowNum}] read data from excel: " + string.Join(", ", rowData));
                             sheetData.Add(rowData);
@@ -206,9 +292,9 @@ namespace CrabExcelDataApp.Service
             return !excelFilterModel.isFilterIgnoreHiddenRows || !range_.Hidden;
         }
 
-        private Range GetFirstDataCell(Worksheet worksheet, ExcelFilterModel excelFilterModel)
+        private Range GetFirstDataCell(Worksheet worksheet, ExcelFilterModel excelFilterModel, int startRowNum)
         {
-            int startRow = Math.Max(1, excelFilterModel.startRowNum);
+            int startRow = Math.Max(1, startRowNum);
             Range firstCell = worksheet.Cells[startRow, 1];
 
             if (0 < worksheet.Application.WorksheetFunction.CountA(firstCell))
@@ -248,9 +334,9 @@ namespace CrabExcelDataApp.Service
             return firstCell;
         }
 
-        private Range GetLastDataCell(Worksheet worksheet, ExcelFilterModel excelFilterModel, Range firstDataCell_)
+        private Range GetLastDataCell(Worksheet worksheet, ExcelFilterModel excelFilterModel, Range firstDataCell_, int startRowNum)
         {
-            int startRow = Math.Max(1, excelFilterModel.startRowNum);
+            int startRow = Math.Max(1, startRowNum);
             Range firstCell = worksheet.Cells[startRow, 1];
             int lastRow = firstCell.End[XlDirection.xlDown].Row;
             int lastColumn = firstCell.End[XlDirection.xlToRight].Column;

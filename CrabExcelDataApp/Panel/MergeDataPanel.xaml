@@ -118,21 +118,6 @@
                       Grid.Column="1"
                       Content="Ignore hidden rows" 
                       x:Name="excelFilter__chxIgnoreHiddenRows" />
-            <DockPanel
-                VerticalAlignment="Center"
-                Grid.Row="0"
-                Grid.Column="2" 
-                >
-                <Label Content="Start Row Num"
-                       DockPanel.Dock="Left"
-                       />
-                <TextBox
-                    Text="1"
-                    VerticalAlignment="Center"
-                    AcceptsReturn="False"
-                     x:Name="excelFilter__inpStartRowNum"
-                     />
-            </DockPanel>
         </Grid>
 
         <Separator 

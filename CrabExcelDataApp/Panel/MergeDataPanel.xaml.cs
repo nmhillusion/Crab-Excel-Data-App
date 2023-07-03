@@ -63,7 +63,7 @@ namespace CrabExcelDataApp.Panel
 
                 if (!StringValidator.IsBlank(chosenFilePath))
                 {
-                    List<TableModel> readData = excelReader.ReadData(chosenFilePath);
+                    List<TableModel> readData = excelReader.ReadData<string>(chosenFilePath);
                     templateTableStore.SetData(readData);
 
                     UpdateDataForUI();
@@ -133,30 +133,9 @@ namespace CrabExcelDataApp.Panel
                 return;
             }
 
-            int startRowNum = 0;
-
-            try
-            {
-                if (!int.TryParse(excelFilter__inpStartRowNum.Text, out startRowNum) ||
-                    startRowNum < 1)
-                {
-                    throw new Exception("Parse start row number fail! please re-check");
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show(
-                    "Error when parse start row number: " + ex.Message,
-                    "Error",
-                    System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Error
-                );
-                return;
-            }
 
             this.mergeFilterModel.isStandardTemplate = excelFilter__chxStandardTemplate.IsChecked ?? false;
             this.mergeFilterModel.isFilterIgnoreHiddenRows = excelFilter__chxIgnoreHiddenRows.IsChecked ?? false;
-            this.mergeFilterModel.startRowNum = startRowNum;
 
             logHelper.Info($"Do Merge Data for [{string.Join(",", chosenFilePaths)}]");
 
