@@ -6,6 +6,7 @@ using CrabExcelDataApp.Validator;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -26,6 +27,7 @@ namespace CrabExcelDataApp.Panel
             isStandardTemplate = true,
             isFilterIgnoreHiddenRows = false,
         };
+        private string fileToSavePath;
 
         public MergeDataPanel()
         {
@@ -173,6 +175,7 @@ namespace CrabExcelDataApp.Panel
 
         private void StartBackgroundWorker(string fileToSavePath)
         {
+            this.fileToSavePath = fileToSavePath;
             btnMerge.IsEnabled = false;
             BackgroundWorker backgroundWorker = new BackgroundWorker();
             backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
@@ -201,12 +204,17 @@ namespace CrabExcelDataApp.Panel
             processBar.Value = 100;
             logHelper.Info("Progress percent: 100% - Completed");
 
-            System.Windows.Forms.MessageBox.Show(
-                "Completed",
+            var dialogResult = System.Windows.Forms.MessageBox.Show(
+                "Completed. Do you want to open containing folder of saved file?",
                 "Information",
-                System.Windows.Forms.MessageBoxButtons.OK,
+                System.Windows.Forms.MessageBoxButtons.YesNo,
                 System.Windows.Forms.MessageBoxIcon.Information
             );
+
+            if (System.Windows.Forms.DialogResult.Yes == dialogResult)
+            {
+                Process.Start("explorer.exe", "/select," + fileToSavePath);
+            }
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
