@@ -70,7 +70,7 @@ namespace CrabExcelDataApp.Service
             {
                 Microsoft.Office.Interop.Excel.Range startRange = oSheet.Cells[rowNum, 1];
                 Microsoft.Office.Interop.Excel.Range endRange = oSheet.Cells[rowNum, headers.Count];
-                oSheet.Range[startRange, endRange].Value = headers.ToArray();
+                oSheet.Range[startRange, endRange].Value2 = headers.ToArray();
                 rowNum += 1;
             }
 
@@ -80,7 +80,7 @@ namespace CrabExcelDataApp.Service
                 Microsoft.Office.Interop.Excel.Range endRange = oSheet.Cells[bodyData.Count + startRange.Row - 1, headers.Count];
                 Microsoft.Office.Interop.Excel.Range dataRange_ = oSheet.Range[startRange, endRange];
                 dataRange_.NumberFormat = "@";
-                dataRange_.Value = ToArrayData(bodyData);
+                dataRange_.Value2 = ToArrayData(bodyData);
             }
         }
 
