@@ -75,7 +75,8 @@ namespace CrabExcelDataApp.Service
             {
                 var rowData = rows[rowIdx];
                 object[] cells = rowData.ItemArray;
-                List<object> list_ = new List<object>(cells);
+                List<string> tmpList = new List<object>(cells).Select(it => it.ToString().Trim()).ToList();
+                List<object> list_ = new List<object>(tmpList);
 
                 if (startHeaderTemplate.All(it => list_.Contains(it)))
                 {
@@ -110,7 +111,7 @@ namespace CrabExcelDataApp.Service
 
                     if (null != cellData && !string.IsNullOrEmpty(cellData.ToString()))
                     {
-                        firstRowData.Add(cellData);
+                        firstRowData.Add(cellData.ToString().Trim());
                     }
                 }
 
