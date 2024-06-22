@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="CrabExcelDataApp.Panel.ConvertPdfToImagePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CrabExcelDataApp.Panel"
+             mc:Ignorable="d" 
+             d:Height="{StaticResource AppHeight}" 
+             d:Width="{StaticResource AppWidth}"
+             Background="{StaticResource AppBackgroundColor}"
+             >
+    <Grid
+        Margin="8"
+        >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" d:Tag="1" />
+            <RowDefinition Height="60" d:Tag="2" />
+            <RowDefinition Height="30" d:Tag="5" />
+            <RowDefinition Height="10" d:Tag="6" />
+            <RowDefinition Height="30" d:Tag="7" />
+            <RowDefinition Height="30" d:Tag="8" />
+            <RowDefinition Height="*" d:Tag="9" />
+        </Grid.RowDefinitions>
+        <Grid
+            Grid.Column="0"
+            Grid.Row="0"
+            >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+
+            <Label 
+                Content="Select PDF file:"
+                Grid.Column="0"
+                Grid.Row="0" 
+                VerticalAlignment="Bottom"
+            />
+            <TextBox 
+                Grid.Column="0"
+                Grid.Row="1" 
+                VerticalContentAlignment="Center"
+                x:Name="inpPdfFile"
+                IsReadOnly="True"
+            />
+            <Button 
+                x:Name="btnPdfFile"
+                Content="..."
+                Grid.Column="1"
+                Grid.Row="1"
+                Cursor="Hand"
+                ToolTip="Select PDF file"
+            />
+        </Grid>
+
+        <Grid
+            Grid.Column="0"
+            Grid.Row="1"
+            >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+
+            <Label 
+                Content="Select output folder:"
+                Grid.Column="0"
+                Grid.Row="0" 
+                VerticalAlignment="Bottom"
+            />
+            <TextBox 
+                Grid.Column="0"
+                Grid.Row="1" 
+                VerticalContentAlignment="Center"
+                x:Name="inpOutputFolder"
+                IsReadOnly="True"
+            />
+            <Button 
+                x:Name="btnOutputFolder"
+                Content="..."
+                Grid.Column="1"
+                Grid.Row="1"
+                Cursor="Hand"
+                ToolTip="Select Output Folder"
+            />
+        </Grid>
+
+        <Separator 
+            Grid.Column="0"
+            Grid.Row="3" 
+            />
+
+        <Button 
+                x:Name="btnConvert"
+                Content="Convert"
+                Grid.Column="0"
+                Grid.Row="4"
+                ToolTip="Merge"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Width="100"
+                Height="30"
+                Foreground="#eeeeee"
+                Background="#333333"
+                Cursor="Hand"
+            />
+        <Separator 
+            Grid.Column="0"
+            Grid.Row="5" 
+            />
+        <ProgressBar 
+            Height="2"
+            VerticalAlignment="Center"
+            Grid.Column="0"
+            Grid.Row="6" 
+            Minimum="0"
+            Maximum="100"
+            x:Name="processBar"
+            />
+
+        <Label
+            Grid.Column="0"
+            Grid.Row="7" 
+            Content="Log:"
+            />
+        <ListView
+            Grid.Column="0"
+            Grid.Row="8" 
+            x:Name="listViewLog"
+            />
+    </Grid>
+</UserControl>

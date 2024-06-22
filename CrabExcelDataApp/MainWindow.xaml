@@ -29,6 +29,11 @@
                      Background="{StaticResource AppBackgroundColor}">
                 <localPanel:MergeDataPanel />
             </TabItem>
+
+            <TabItem Header="Convert PDF to Image" x:Name="convertPdfToImageTab"
+                    Background="{StaticResource AppBackgroundColor}">
+                <localPanel:ConvertPdfToImagePanel />
+            </TabItem>
         </TabControl>
 
         <TextBlock
