@@ -4,6 +4,7 @@ using CrabExcelDataApp.Service.Logger;
 using CrabExcelDataApp.Store;
 using CrabExcelDataApp.Validator;
 using PdfiumViewer;
+using PdfSharp.Drawing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -89,11 +90,26 @@ namespace CrabExcelDataApp.Panel
                 return;
             }
 
+            string dpi = inpDpi.Text;
+            if (StringValidator.IsBlank(dpi) || 0 >= Int16.Parse(dpi))
+            {
+                System.Windows.MessageBox.Show("Please input valid DPI", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-            StartBackgroundWorker(pdfFilePath, folderToSavePath);
+            ComboBoxItem selectedOutputTypeItem = (ComboBoxItem)cbxOutputType.SelectedItem;
+            string selectedOutputTypeValue = selectedOutputTypeItem.Tag.ToString();
+
+            StartBackgroundWorker(new ConvertPdfToImageBackgroundModel
+            {
+                pdfFilePath = pdfFilePath,
+                imageOutputFolderPath = folderToSavePath,
+                outputType = selectedOutputTypeValue,
+                dpi = Int16.Parse(dpi),
+            });
         }
 
-        private void StartBackgroundWorker(string pdfFilePath, string saveFolderPath)
+        private void StartBackgroundWorker(ConvertPdfToImageBackgroundModel model_)
         {
             btnConvert.IsEnabled = false;
             BackgroundWorker backgroundWorker = new BackgroundWorker();
@@ -103,12 +119,8 @@ namespace CrabExcelDataApp.Panel
             backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
             backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
 
-            this.imageOutputFolderPath = saveFolderPath;
-            backgroundWorker.RunWorkerAsync(new ConvertPdfToImageBackgroundModel
-            {
-                pdfFilePath = pdfFilePath,
-                imageOutputFolderPath = saveFolderPath,
-            });
+            this.imageOutputFolderPath = model_.imageOutputFolderPath;
+            backgroundWorker.RunWorkerAsync(model_);
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -139,15 +151,27 @@ namespace CrabExcelDataApp.Panel
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker backgroundWorker = sender as BackgroundWorker;
-            DoConvertPdfToImage(backgroundWorker, e.Argument as ConvertPdfToImageBackgroundModel);
+            DoConvertPdfToAnotherType(backgroundWorker, e.Argument as ConvertPdfToImageBackgroundModel);
+        }
+
+        private void DoConvertPdfToAnotherType(BackgroundWorker bgw, ConvertPdfToImageBackgroundModel model_)
+        {
+            logHelper.Info($"Convert PDF [{model_.pdfFilePath}] to folder: {model_.imageOutputFolderPath} with outputType: {model_.outputType}");
+
+            bgw.ReportProgress(0);
+
+            if ("image".Equals(model_.outputType))
+            {
+                DoConvertPdfToImage(bgw, model_);
+            }
+            else
+            {
+                DoConvertPdfToPdf(bgw, model_);
+            }
         }
 
         private void DoConvertPdfToImage(BackgroundWorker bgw, ConvertPdfToImageBackgroundModel model_)
         {
-            logHelper.Info($"Convert PDF [{model_.pdfFilePath}] to folder: {model_.imageOutputFolderPath}");
-
-            bgw.ReportProgress(0);
-
             using (var document = PdfDocument.Load(model_.pdfFilePath))
             {
                 Directory.CreateDirectory(model_.imageOutputFolderPath);
@@ -156,13 +180,84 @@ namespace CrabExcelDataApp.Panel
 
                 for (int pageIdx = 0; pageIdx < pageCount; pageIdx++)
                 {
-                    using (var image = document.Render(pageIdx, 300, 300, true))
+                    using (var image = document.Render(pageIdx, model_.dpi, model_.dpi, true))
                     {
                         image.Save(Path.Combine(model_.imageOutputFolderPath, $"page_{pageIdx}.png"), ImageFormat.Png);
                     }
                     var percent_ = (float)(pageIdx + 1) * 100 / pageCount;
                     bgw.ReportProgress((int)percent_);
                 }
+            }
+        }
+
+        private void SavePagesToOnePdf(BackgroundWorker bgw, ConvertPdfToImageBackgroundModel model_, MemoryStream[] streamPages)
+        {
+            // Create a file stream for saving the PDF
+            using (FileStream output = new FileStream(Path.Combine(model_.imageOutputFolderPath, "renderedDocument.pdf"), FileMode.Create))
+            {
+                using (PdfSharp.Pdf.PdfDocument document = new PdfSharp.Pdf.PdfDocument())
+                {
+                    int pageCount = streamPages.Length;
+                    for (int pageIdx = 0; pageIdx < pageCount; ++pageIdx)
+                    {
+                        MemoryStream streamPage = streamPages[pageIdx];
+
+                        using (streamPage)
+                        {
+                            byte[] byteData = streamPage.ToArray();
+
+                            ///////////////////////
+                            using (var image = XImage.FromStream(streamPage))
+                            {
+                                var page_ = document.AddPage();
+                                page_.MediaBox = new PdfSharp.Pdf.PdfRectangle(new XRect(0, 0, image.PixelWidth, image.PixelHeight));
+                                //page_.Width = image.PixelWidth;
+                                //page_.Height = image.PixelHeight;
+
+                                XGraphics gfx = XGraphics.FromPdfPage(page_, XGraphicsPdfPageOptions.Append);
+                                gfx.SmoothingMode = XSmoothingMode.HighQuality;
+                                gfx.DrawImage(image, 0, 0, image.PixelWidth, image.PixelHeight);
+                                gfx.Dispose();
+                            }
+                            ///////////////////////
+                        }
+
+                        var percent_ = (float)(pageIdx + 1) * 50 / pageCount + 50;
+                        bgw.ReportProgress((int)percent_);
+                    }
+
+                    output.Flush();
+
+                    document.Save(output, true);
+                }
+            }
+
+        }
+
+        private void DoConvertPdfToPdf(BackgroundWorker bgw, ConvertPdfToImageBackgroundModel model_)
+        {
+
+            using (var document = PdfDocument.Load(model_.pdfFilePath))
+            {
+                Directory.CreateDirectory(model_.imageOutputFolderPath);
+
+                int pageCount = document.PageCount;
+                MemoryStream[] streamPages = new MemoryStream[pageCount];
+
+                for (int pageIdx = 0; pageIdx < pageCount; pageIdx++)
+                {
+                    using (var image = document.Render(pageIdx, 300, 300, PdfRenderFlags.CorrectFromDpi))
+                    {
+                        MemoryStream currentStreamPage = new MemoryStream();
+                        image.Save(stream: currentStreamPage, format: ImageFormat.Png);
+
+                        streamPages[pageIdx] = currentStreamPage;
+                    }
+                    var percent_ = (float)(pageIdx + 1) * 100 / (pageCount * 2);
+                    bgw.ReportProgress((int)percent_);
+                }
+
+                SavePagesToOnePdf(bgw, model_, streamPages);
             }
         }
     }

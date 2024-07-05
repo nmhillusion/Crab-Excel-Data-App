@@ -10,5 +10,7 @@ namespace CrabExcelDataApp.Model
     {
         public string pdfFilePath;
         public string imageOutputFolderPath;
+        public string outputType;
+        public Int16 dpi;
     }
 }
