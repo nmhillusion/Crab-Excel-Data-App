@@ -180,7 +180,7 @@ namespace CrabExcelDataApp.Panel
 
                 for (int pageIdx = 0; pageIdx < pageCount; pageIdx++)
                 {
-                    using (var image = document.Render(pageIdx, model_.dpi, model_.dpi, true))
+                    using (var image = document.Render(pageIdx, model_.dpi, model_.dpi, PdfRenderFlags.CorrectFromDpi))
                     {
                         image.Save(Path.Combine(model_.imageOutputFolderPath, $"page_{pageIdx}.png"), ImageFormat.Png);
                     }
@@ -211,8 +211,6 @@ namespace CrabExcelDataApp.Panel
                             {
                                 var page_ = document.AddPage();
                                 page_.MediaBox = new PdfSharp.Pdf.PdfRectangle(new XRect(0, 0, image.PixelWidth, image.PixelHeight));
-                                //page_.Width = image.PixelWidth;
-                                //page_.Height = image.PixelHeight;
 
                                 XGraphics gfx = XGraphics.FromPdfPage(page_, XGraphicsPdfPageOptions.Append);
                                 gfx.SmoothingMode = XSmoothingMode.HighQuality;
@@ -246,7 +244,7 @@ namespace CrabExcelDataApp.Panel
 
                 for (int pageIdx = 0; pageIdx < pageCount; pageIdx++)
                 {
-                    using (var image = document.Render(pageIdx, 300, 300, PdfRenderFlags.CorrectFromDpi))
+                    using (var image = document.Render(pageIdx, model_.dpi, model_.dpi, PdfRenderFlags.CorrectFromDpi))
                     {
                         MemoryStream currentStreamPage = new MemoryStream();
                         image.Save(stream: currentStreamPage, format: ImageFormat.Png);
